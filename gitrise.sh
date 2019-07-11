@@ -40,7 +40,7 @@ done
 set -- "${POSITIONAL[@]}"
 
 if [[ -z $WORKFLOW || -z $BRANCH || -z $PROJECT_SLUG || -z $ACCESS_TOKEN ]]; then
-    echo "Please re-run -h or --help for help."
+    echo "One or more required parameters not set. Please rerun with -h or --help for more info."
     exit 1
 fi
 
