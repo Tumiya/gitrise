@@ -1,17 +1,36 @@
-version="0.0.1"
-app_name="Gitrise Trigger"
+#!/usr/local/bin/bash
+# setting exit on error
+set -e
+VERSION="0.0.1"
+APP_NAME="Gitrise Trigger"
 
 build_complete=0
 build_output=""
 build_index=0
 build_slug=""
 
+usage() {
+    echo ""
+    echo "Usage: gitrise [options]"
+    echo 
+    echo "[options]"
+    echo "  -w, --workflow      <string>    Bitrise Workflow"
+    echo "  -b, --branch        <string>    Git Branch"
+    echo "  -a, --access-token  <string>    Bitrise access token"
+    echo "  -s, --slug          <string>    Bitrise project slug"
+    echo "  -h, --help          <string>    Print this help text"
+}
+
+# parsing space separated options
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
 key="$1"
-
 case $key in
+    -v|--version)
+    echo "Trigger version $VERSION"
+    exit 0
+    ;;
     -w|--workflow)
     WORKFLOW="$2"
     shift;shift
@@ -28,47 +47,60 @@ case $key in
     PROJECT_SLUG="$2"
     shift;shift
     ;;
-    -h|--help)
-    usage
+    -e|--env)
+    ENV_STRING="$2"
     shift;shift
     ;;
+    -h|--help)
+    usage
+    exit 0 
+    ;;
     *) usage
-    POSITIONAL+=("$1");shift 
+    POSITIONAL+=("$1");shift
     ;;
 esac
 done
+
+# restore positional parameters
 set -- "${POSITIONAL[@]}"
 
-if [[ -z $WORKFLOW || -z $BRANCH || -z $PROJECT_SLUG || -z $ACCESS_TOKEN ]]; then
-    echo "Please re-run -h or --help for help."
-    exit 1
-fi
+# if [[ -z $WORKFLOW || -z $BRANCH || -z $PROJECT_SLUG || -z $ACCESS_TOKEN ]]; then
+#     echo "Please re-run -h or --help for help."
+#     exit 1
+# fi
 
-usage() {
-    echo ""
-    echo "Usage: gitrise [options]"
-    echo 
-    echo "[options]"
-    echo "  -w, --workflow      <string>    Bitrise Workflow"
-    echo "  -b, --branch        <string>    Git Branch"
-    echo "  -a, --access-token  <string>    Bitrise access token"
-    echo "  -s, --slug          <string>    Bitrise project slug"
-    echo "  -h, --help          <string>    Print this help text"
+# map environment variables to objects Bitrise will accept. 
+# ENV_STRING is passed as argument 
+process_env_vars () {
+    IFS=',' read -r -a env_array <<< "$1"
+    local vars=""
+    for i in "${env_array[@]}"
+     do
+        IFS='=' read -r -a  array_from_pair <<< $i
+        key="${array_from_pair[0]}"
+        value="${array_from_pair[1]}"
+        vars+="{\"mapped_to\":\"$key\",\"value\":\"$value\",\"is_expand\":true},"
+    done
+    echo "[$(sed 's/,$//' <<< $vars)]"
 }
 
 intro () {
-    echo "$app_name version $version \nLaunched on $(date)"
+    printf "%s VERSION %s \nLaunched on $(date)" "$APP_NAME" "$VERSION"
 }
 
-pre_build () {  
+pre_build () { 
+    local environments=$(process_env_vars "$ENV_STRING")   
+    local payload="{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"branch\":\"$BRANCH\",\"workflow_id\":\"$WORKFLOW\",\"environments\":$environments \
+    }}" 
     local __command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
-            --data '{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"branch\":\"$BRANCH\",\"workflow_id\":\"$WORKFLOW\"}}' \
+            --data '$payload' \
             --header 'Authorization: $ACCESS_TOKEN'"
-    local __result=$(eval ${__command})
-    local __build_url=$(echo ${__result} | jq ".build_url" | sed 's/"//g')
-    build_slug=$(echo ${__result} | jq ".build_slug" | sed 's/"//g')
-    echo "\nBuild URL: ${__build_url} \n\nHold on... We're about to liftoff! 🚀\n"
+    local __result=$(eval "${__command}")
+    local __build_url=$(echo "${__result}" | jq ".build_url" | sed 's/"//g')
+    build_slug=$(echo "${__result}" | jq ".build_slug" | sed 's/"//g')
+    printf "\nBuild URL: %s \n\nHold on... We're about to liftoff! 🚀\n" "${__build_url}"
 }
+
 
 mid_build () {
     while [ "$build_complete" != "1" ]; do 
