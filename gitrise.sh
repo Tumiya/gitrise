@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 # setting exit on error
 set -e
 VERSION="0.0.1"
