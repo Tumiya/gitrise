@@ -108,7 +108,7 @@ mid_build () {
         local __next_output=$(eval ${__command} | jq ".log_chunks[0]" | jq ".chunk" | sed 's/"//g')
         local __next_index=$(eval ${__command} | jq ".log_chunks[0]" | jq ".position")
         local __new_chunks=${__next_output#${__build_output}}
-        __command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug --header 'Authorization: $ACCESS_TOKEN'"
+        local __command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug --header 'Authorization: $ACCESS_TOKEN'"
         local __state=$(eval ${__command} | jq ".data" | jq ".status_text" | sed 's/"//g')
         if [ ${__state} != "in-progress" ]; then
             build_complete=1
