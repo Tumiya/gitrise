@@ -72,16 +72,26 @@ set -- "${POSITIONAL[@]}"
 # map environment variables to objects Bitrise will accept. 
 # ENV_STRING is passed as argument 
 process_env_vars () {
-    IFS=',' read -r -a env_array <<< "$1"
-    local vars=""
+    local env_string=""
+    local result=""
+    input_length=$(grep -c . <<< "$1")
+    if [[ $input_length -gt 1 ]]; then
+        while read -r line
+        do
+            env_string+=$line
+        done <<< "$1"
+    else
+    env_string="$1"
+    fi
+    IFS=',' read -r -a env_array <<< "$env_string"
     for i in "${env_array[@]}"
      do
         IFS='=' read -r -a  array_from_pair <<< $i
         key="${array_from_pair[0]}"
         value="${array_from_pair[1]}"
-        vars+="{\"mapped_to\":\"$key\",\"value\":\"$value\",\"is_expand\":true},"
+        result+="{\"mapped_to\":\"$key\",\"value\":\"$value\",\"is_expand\":true},"
     done
-    echo "[$(sed 's/,$//' <<< $vars)]"
+    echo "[$(sed 's/,$//' <<< $result)]"
 }
 
 intro () {
