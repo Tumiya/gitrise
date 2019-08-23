@@ -4,5 +4,5 @@ os:
   - linux
 
 script:
-  - ./tests/build_tests.sh
-  - ./tests/options_tests.sh
+  - ./tests/test_runner
+  
