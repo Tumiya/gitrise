@@ -22,3 +22,10 @@ Usage: gitrise [options]
 ## API Reference
 
 Please see [here](https://api-docs.bitrise.io/#/) for Bitrise API Reference 
+
+## Tests
+
+To run the unit tests, use the following command in the project directory
+```bash
+./tests/test_runner
+```

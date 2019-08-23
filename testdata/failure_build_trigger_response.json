@@ -1,0 +1,6 @@
+{
+    "status":"error",
+    "message":"workflow (non-existing) did not match any workflows defined in app config",
+    "slug":"52729494c71c6882",
+    "service":"bitrise"
+}

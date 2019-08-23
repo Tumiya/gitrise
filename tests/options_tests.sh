@@ -1,7 +1,6 @@
 #! /bin/bash
 
 # shellcheck disable=SC1091
-# shellcheck disable=SC2006
 source ./tests/test_helper.sh
 
 testEnvVars() {
