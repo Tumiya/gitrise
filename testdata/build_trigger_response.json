@@ -1,0 +1,10 @@
+{
+"status":"ok",
+"message":"webhook processed",
+"slug":"456bg702r45eu099",
+"service":"bitrise",
+"build_slug":"546yw9284a8g1205",
+"build_number":91,
+"build_url":"https://test.io/build/546yw9284a8g1205",
+"triggered_workflow":"build_app"
+}
