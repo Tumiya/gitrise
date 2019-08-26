@@ -1,7 +1,5 @@
 #!/bin/bash
-# setting exit on error
-set -e
-VERSION="0.0.1"
+VERSION="0.3.0"
 APP_NAME="Gitrise Trigger"
 
 build_complete=0
@@ -16,6 +14,7 @@ usage() {
     echo "[options]"
     echo "  -w, --workflow      <string>    Bitrise Workflow"
     echo "  -b, --branch        <string>    Git Branch"
+    echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -s, --slug          <string>    Bitrise project slug"
     echo "  -h, --help          <string>    Print this help text"
@@ -23,43 +22,50 @@ usage() {
 
 # parsing space separated options
 POSITIONAL=()
-while [[ $# -gt 0 ]]
-do
-key="$1"
-case $key in
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
     -v|--version)
-    echo "Trigger version $VERSION"
-    exit 0
+        echo "Trigger version $VERSION"
+        exit 0
     ;;
     -w|--workflow)
-    WORKFLOW="$2"
-    shift;shift
+        WORKFLOW="$2"
+        shift;shift
     ;;
     -b|--branch)
-    BRANCH="$2"
-    shift;shift
+        BRANCH="$2"
+        shift;shift
     ;;
     -a|--access-token)
-    ACCESS_TOKEN="$2"
-    shift;shift
+        ACCESS_TOKEN="$2"
+        shift;shift
     ;;
     -s|--slug)
-    PROJECT_SLUG="$2"
-    shift;shift
+        PROJECT_SLUG="$2"
+        shift;shift
     ;;
     -e|--env)
-    ENV_STRING="$2"
-    shift;shift
+        ENV_STRING="$2"
+        shift;shift
     ;;
     -h|--help)
-    usage
-    exit 0 
+        usage
+        exit 0 
     ;;
-    *) usage
-    POSITIONAL+=("$1");shift
+    -t|--test)
+        TESTING_ENABLED="true"
+        shift
     ;;
-esac
+    *) 
+        echo "Invalid option '$1'"
+        usage
+        POSITIONAL+=("$1")
+        exit 1
+    ;;
+    esac
 done
+
 
 # restore positional parameters
 set -- "${POSITIONAL[@]}"
@@ -70,7 +76,7 @@ set -- "${POSITIONAL[@]}"
 # fi
 
 # map environment variables to objects Bitrise will accept. 
-# ENV_STRING is passed as argument 
+# ENV_STRING is passed as argument
 process_env_vars () {
     local env_string=""
     local result=""
@@ -85,8 +91,8 @@ process_env_vars () {
     fi
     IFS=',' read -r -a env_array <<< "$env_string"
     for i in "${env_array[@]}"
-     do
-        IFS='=' read -r -a  array_from_pair <<< $i
+    do
+        IFS=':' read -a array_from_pair <<< "$i"
         key="${array_from_pair[0]}"
         value="${array_from_pair[1]}"
         result+="{\"mapped_to\":\"$key\",\"value\":\"$value\",\"is_expand\":true},"
@@ -95,22 +101,31 @@ process_env_vars () {
 }
 
 intro () {
-    printf "%s VERSION %s \nLaunched on $(date)" "$APP_NAME" "$VERSION"
+    if [ "$TESTING_ENABLED" ]; then
+        echo "Gitrise is running in testing mode"
+    else
+        printf "%s VERSION %s \nLaunched on $(date)" "$APP_NAME" "$VERSION"
+    fi
 }
 
 pre_build () { 
-    local environments=$(process_env_vars "$ENV_STRING")   
-    local payload="{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"branch\":\"$BRANCH\",\"workflow_id\":\"$WORKFLOW\",\"environments\":$environments \
-    }}" 
-    local __command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
-            --data '$payload' \
-            --header 'Authorization: $ACCESS_TOKEN'"
-    local __result=$(eval "${__command}")
-    local __build_url=$(echo "${__result}" | jq ".build_url" | sed 's/"//g')
-    build_slug=$(echo "${__result}" | jq ".build_slug" | sed 's/"//g')
-    printf "\nBuild URL: %s \n\nHold on... We're about to liftoff! 🚀\n" "${__build_url}"
-}
+    local result=""
+    if [ ! "$TESTING_ENABLED" ]; then
+        local environments=$(process_env_vars "$ENV_STRING")   
+        local payload="{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"branch\":\"$BRANCH\",\"workflow_id\":\"$WORKFLOW\",\"environments\":$environments \
+        }}" 
+        local command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
+                --data '$payload' \
+                --header 'Authorization: $ACCESS_TOKEN'"
+        result=$(eval "${command}")   
+    else
+        result=$(<./testdata/build_trigger_response.json)
 
+    fi
+    local build_url=$(echo "${result}" | jq ".build_url" | sed 's/"//g')
+    build_slug=$(echo "${result}" | jq ".build_slug" | sed 's/"//g')
+    printf "\nHold on... We're about to liftoff! 🚀\n \nBuild URL: %s" "${build_url}"
+}
 
 mid_build () {
     while [ "$build_complete" != "1" ]; do 
@@ -157,7 +172,10 @@ pst_build () {
     fi
 }
 
-intro
-pre_build
-mid_build
-pst_build
+# No function execution when the script is sourced 
+if [ "$0" = "$BASH_SOURCE" ] && [ -z "${TESTING_ENABLED}" ]; then
+    intro
+    pre_build
+    mid_build
+    pst_build
+fi
