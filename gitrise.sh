@@ -1,4 +1,7 @@
 #!/bin/bash
+# shellcheck disable=SC2155
+# disbales "Declare and assign separately to avoid masking return values."
+
 VERSION="0.4.0"
 APP_NAME="Gitrise Trigger"
 
@@ -88,12 +91,16 @@ process_env_vars () {
     IFS=',' read -r -a env_array <<< "$env_string"
     for i in "${env_array[@]}"
     do
+        # shellcheck disable=SC2162
+        # disables "read without -r will mangle backslashes"
         IFS=':' read -a array_from_pair <<< "$i"
         key="${array_from_pair[0]}"
         value="${array_from_pair[1]}"
+        # shellcheck disable=SC2089
+        # disables "Quotes/backslashes will be treated literally. Use an array."
         result+="{\"mapped_to\":\"$key\",\"value\":\"$value\",\"is_expand\":true},"
     done
-    echo "[$(sed 's/,$//' <<< $result)]"
+    echo "[${result/%,}]"
 }
 
 intro () {
@@ -104,6 +111,7 @@ intro () {
     fi
 }
 # shellcheck disable=SC2120
+# disables "foo references arguments, but none are ever passed."
 trigger_build () { 
     local result=""
     if [ -z "${TESTING_ENABLED}" ]; then
@@ -115,7 +123,7 @@ trigger_build () {
                 --header 'Authorization: $ACCESS_TOKEN'"
         result=$(eval "${command}") 
     else
-        result=$(<./testdata/$1_build_trigger_response.json)
+        result=$(<./testdata/"$1"_build_trigger_response.json)
     fi
     status=$(echo "$result" | jq ".status" | sed 's/"//g' ) 
     if [ "$status" != "ok" ]; then
@@ -173,6 +181,7 @@ build_status_message () {
 }
 
 # shellcheck disable=SC2120
+# disables "foo references arguments, but none are ever passed."
 get_log_info(){
     local log_is_archived=false
     local counter=0
@@ -185,7 +194,7 @@ get_log_info(){
             local command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug/log --header 'Authorization: $ACCESS_TOKEN'"
             response=$(eval "$command")
         else
-            response="$(< ./testdata/$1_log_info_response.json)"
+            response="$(< ./testdata/"$1"_log_info_response.json)"
         fi
         log_is_archived=$(echo "$response" | jq ".is_archived")
         ((counter++))
@@ -209,7 +218,9 @@ get_logs(){
 
 }
 # No function execution when the script is sourced 
-if [ "$0" = "$BASH_SOURCE" ] && [ -z "${TESTING_ENABLED}" ]; then
+# shellcheck disable=SC2119
+# disables "use foo "$@" if function's $1 should mean script's $1."
+if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
     intro
     trigger_build
     get_build_status

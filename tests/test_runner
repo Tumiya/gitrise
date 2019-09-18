@@ -9,7 +9,7 @@ failed_test=false
 
 while IFS= read -r -d '' file
 do
-    printf "Test Suite: %s \n\n" "$(basename $file | sed 's/.sh//g')"
+    printf "Test Suite: %s \n\n" "$(basename "$file" | sed 's/.sh//g')"
     if ! eval "$file"; then failed_test=true; fi
 
 done < <(find $TEST_DIRECTORY -iname '*tests.sh' -print0)
