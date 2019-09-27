@@ -1,0 +1,43 @@
+{
+    "expiring_raw_log_url":"https://bitrise_test_url.com",
+    "generated_log_chunks_num":13,
+    "is_archived":true,
+    "log_chunks":
+    [
+        {
+            "chunk":"+-------it: bash    ------------------------|\n+ brew cask install docker-toolbox\n==> Satisfying dependencies\n==> Installing Cask dependencies: virtualbox\n==> Caveats\nTo install and/or use virtualbox you may need to enable its kernel extension in:\n  System Preferences → Security & Privacy → General\nFor more information refer to vendor documentation or this Apple Technical Note:\n  https://developer.apple.com/library/content/technotes/tn2459/_index.html\n\n==> Satisfying dependencies\n==> Downloading https://download.virtualbox.org/virtualbox/6.0.10/VirtualBox-6.0.10-132072-OSX.dmg\n",
+            "position":4
+        },
+        {
+            "chunk":"==> Verifying SHA-256 checksum for Cask 'virtualbox'.\n==> Installing Cask virtualbox\n",
+            "position":5
+        },
+        {
+            "chunk":"==> Running installer for virtualbox; your password may be necessary.\n==> Package installers may write to any location; options such as --appdir are ignored.\n",
+            "position":6
+        },
+        {
+            "chunk":"installer: Package nat base path /\ninstaller: The install was successful.\n🍺  virtualbox was successfully installed!\n",
+            "position":7},
+        {
+            "chunk":"==> Downloading https://github.com/",
+            "position":8},
+        {
+            "chunk":"==> Verifying SHA-256 checksum for Cask 'docker-toolbox'.\n==> Installing Cask docker-toolbox\n==>e necessary.\n==> Package installers may write to any location; options such as --appdir are ignored.\n",
+            "position":9},
+        {
+            "chunk":"installer: Package name is Docker Toolbox\ninstaller: choices changes file '/var/folders/90/5stft2v13fb_m_gv3c8x9nwc0000gn/T/choices20190822-1125-typiw2.xml' applied\ninstaller: Installing at base path /\ninstaller: The install was successful.\n==> Changing ownership of paths required by docker-toolbox; your password may be necessary\n",
+            "position":10},
+        {
+            "chunk":"🍺  docker-toolbox was successfully Enabling it in the BIOS is mandatory\"\n|                                                                              |\n+---+---------------------------------------------------------------+----------+\n| \u001b[31;1mx\u001b[0m | \u001b[31;1mInstall Docker (exit code: 3)\u001b[0m                                 | 82 sec   |\n+---+---------------------------------------------------------------+----------+\n| Issue tracker: https://github.com/bitrise-io/steps-script/issues             |\n| Source: https://github.com/bitrise-io/steps-script                           |\n+---+---------------------------------------------------------------+----------+\n\n                                          ▼\n\n+------------------------------------------------------------------------------+\n| (4) deploy-to-bitrise-io@1.3.10                                              |\n+------------------------------------------------------------------------------+\n| id: deploy-to-bitrise-io                                                     |\n| version: 1.3.10                                                              |\n| collection: https://github.com/bitrise-io/bitrise-steplib.git                |\n| toolkit: go                                                                  |\n| time: 2019-08-22T13:25:58-07:00                                              |\n+------------------------------------------------------------------------------+\n|                                                                              |\n",
+            "position":11},
+        {
+            "chunk":"\n\u001b[34;1mConfigs:\u001b[0m\n- BuildURL: https://app.bi;1mSuccess\u001b[0m\nYou can find the Artifact on Bitrise, on the Build's page: https://app.bitrise.io/build/525060619ad47aa4\n|                                                                              |\n+---+---------------------------------------------------------------+----------+\n| \u001b[32;1m✓\u001b[0m | \u001b[32;1mdeploy-to-bitrise-io@1.3.10\u001b[0m                                   | 4.31 sec |\n+---+---------------------------------------------------------------+----------+\n| Update available: 1.3.10 -> 1.6.1                                            |\n+---+---------------------------------------------------------------+----------+\n\n\n+------------------------------------------------------------------------------+\n|                               bitrise summary                                |\n+---+---------------------------------------------------------------+----------+\n|   | title                                                         | time (s) |\n+---+---------------------------------------------------------------+----------+\n| \u001b[32;1m✓\u001b[0m | \u001b[32;1mactivate-ssh-key@3.1.1\u001b[0m                                        | 1.92 sec |\n+---+---------------------------------------------------------------+----------+\n| Update available: 3.1.1 -> 4.0.3                                             |\n+---+---------------------------------------------------------------+----------+\n| \u001b[32;1m✓\u001b[0m | \u001b[32;1mgit-clone@4.0.5\u001b[0m                                               | 6.70 sec |\n+---+---------------------------------------------------------------+----------+\n| Update available: 4.0.5 -> 4.0.15                                            |\n+---+---------------------------------------------------------------+----------+\n| \u001b[32;1m✓\u001b[0m | \u001b[32;1mscript@1.1.5\u001b[0m                                                  | 2.27 sec |\n+---+---------------------------------------------------------------+----------+\n| \u001b[31;1mx\u001b[0m | \u001b[31;1mInstall Docker (exit code: 3)\u001b[0m                                 | 82 sec   |\n+---+---------------------------------------------------------------+----------+\n| Issue tracker: https://github.com/bitrise-io/steps-script/issues             |\n| Source: https://github.com/bitrise-io/steps-script                           |\n+---+---------------------------------------------------------------+----------+\n| \u001b[32;1m✓\u001b[0m | \u001b[32;1mdeploy-to-bitrise-io@1.3.10\u001b[0m                                   | 4.31 sec |\n+---+---------------------------------------------------------------+----------+\n| Update available: 1.3.10 -> 1.6.1                                            |\n+---+---------------------------------------------------------------+----------+\n| Total runtime: 97 sec                                                        |\n+------------------------------------------------------------------------------+\n\n\u001b[34;1m\u001b[0m\n\u001b[34;1mSubmitting anonymized usage informations...\u001b[0m\n\u001b[34;1mFor more information visit:\u001b[0m\n\u001b[34;1mhttps://github.com/bitrise-io/bitrise-plugins-analytics/blob/master/README.md\u001b[0m\n",
+            "position":12},
+        {
+            "chunk":"exit status 1",
+            "position":14
+            }
+    ],
+    "timestamp":null
+}

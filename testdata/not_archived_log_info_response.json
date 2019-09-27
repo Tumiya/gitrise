@@ -1,0 +1,42 @@
+{
+    "expiring_raw_log_url":"null",
+    "generated_log_chunks_num":13,
+    "is_archived":false,
+    "log_chunks":
+    [
+        {
+            "chunk":"+-------it: bash    ------------------------+\n|                                                                              |\n+ brew cask install docker-toolbox\n==> Satisfying dependencies\n==> Installing Cask dependencies: virtualbox\n==> Caveats\nTo install "
+        },
+        {
+            "chunk":"==> Verifying SHA-256 checksum for Cask 'virtualbox'.\n==> Installing Cask virtualbox\n",
+            "position":5
+        },
+        {
+            "chunk":"==> Running installer for virtualbox; your password may be necessary.\n==> Package installers may write to any location; options such as --appdir are ignored.\n",
+            "position":6
+        },
+        {
+            "chunk":"installer: Package name is Oracle VM VirtualBox\ninstaller: Installing at base path /\ninstaller: The install was successful.\n🍺  virtualbox was successfully installed!\n",
+            "position":7},
+        {
+            "chunk":"==> Downloading https://github.com/docker/toolbox/releases/download/v18.09.3/DockerToo02527Z&X-Amz-Expires=300&X-Amz-Signature=a45a657605d25da8a77066751aaf8a09c35067b3043e66c9b6343162ae704724&X-Amz-SignedHeaders=host&actor_id=0&response-content-disposition=attachment%3B%20filename%3DDockerToolbox-18.09.3.pkg&response-content-type=application%2Foctet-stream\n",
+            "position":8},
+        {
+            "chunk":"==> Verifying SHA-256 checksum for Cask 'docker-toolbox'.\n==> Installing Cask docker-toolbox\n==> Running installer for docker-toolbox; your password may be necessary.\n==> Package installers may write to any location; options such as --appdir are ignored.\n",
+            "position":9},
+        {
+            "chunk":"installer: Package name is Docker Toolbox\ninstaller: choices changes file '/var/folders/90/5stft2v13fb_m_gv3c8x9nwc0000gn/T/choices20190822-1125-typiw2.xml' applied\ninstaller: Installing at base path /\ninstaller: The install was successful.\n==> Changing ownership of paths required by docker-toolbox; your password may be necessary\n",
+            "position":10},
+        {
+            "chunk":"🍺  docker-toolbox was successfully installed!- \u001b[31;1mInstall Docker (exi|\n| ve      |\n| collection: https://github.com/bitrise-io/bitrise-steplib.git                |\n| toolkit: go                                                                  |\n| time: 2019-08-22T13:25:58-07:00                                              |\n+------------------------------------------------------------------------------+\n|                                                                              |\n",
+            "position":11},
+        {
+            "chunk":"\n\u001b[34;1mC01b[34;1mhttps://github.com/bitrise-io/bitrise-plugins-analytics/blob/master/README.md\u001b[0m\n",
+            "position":12},
+        {
+            "chunk":"exit status 1",
+            "position":14
+            }
+    ],
+    "timestamp":null
+}
