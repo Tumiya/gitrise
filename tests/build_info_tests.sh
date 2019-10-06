@@ -26,16 +26,36 @@ testFailureUponUsingWrongOptions() {
 }
 
 testFetchingBuildStatusText(){
-    local expected_text="Build error"
-    local actual_text=$(get_build_status )
-    assertEquals "Build status text did not match." "$expected_text" "$actual_text" 
+    local expected_content="Build error"
+    local result=$(get_build_status  build_status_response.json)
+    assertContains "Build status text did not match." "$result" "${expected_content}" 
 }
 
 testExitCodeAssignmentFromBuildStatus(){
     local expected_code=1
-    get_build_status > /dev/null
+    get_build_status  build_status_response.json 
     local actual_code=${exit_code}
-    assertEquals "exit code did not match." "$expected_code" "$actual_code"
+    assertEquals "exit code did not match." "${expected_code}" "${actual_code}"
 }
 
+testLoggingWaitingForWorkerMessage() {
+    local expected_content="Waiting for Bitrise worker to start the build"
+    local result=$(get_build_status wait-for-worker-build-status.json)
+    assertContains "message did not contain the expected content." "${result}" "${expected_content}"
+}
+
+testLoggingBuildStartTime(){
+    given time = 2019-10-01T02:35:47Z
+    correct time = 10:37 PM monday
+}
+
+tearDown() {
+    #resetting the global variables
+    build_slug=""
+    build_url=""
+    build_status=0
+    previous_build_status_text=""
+    exit_code=""
+    log_url=""
+}
 . ./tests/shunit2

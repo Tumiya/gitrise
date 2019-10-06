@@ -129,24 +129,46 @@ trigger_build () {
     printf "\nHold on... We're about to liftoff! 🚀\n \nBuild URL: %s\n" "${build_url}"
 }
 
+# shellcheck disable=SC2120
 get_build_status () {
     local response=""
+    local time_was_printed=false
     while [ "${build_status}" = 0 ]; do
         if [ -z "${TESTING_ENABLED}" ]; then
             sleep 10
             local command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug --header 'Authorization: $ACCESS_TOKEN'"
             response=$(eval "${command}")
         else
-            response=$(< ./testdata/build_status_response.json)
+            response=$(< ./testdata/"$1")
         fi
         local current_build_status_text=$(echo "$response" | jq ".data .status_text" | sed 's/"//g')
+        local build_start_time=$(echo "$response" | jq ".data .started_on_worker_at" | sed 's/"//g')
+
         if [ "$previous_build_status_text" != "$current_build_status_text" ]; then
             echo "Build $current_build_status_text"
             previous_build_status_text="${current_build_status_text}"
         fi
+
+        # if [ "${build_start_time}" != "null" ] && [ "${time_was_printed}" == false ]; then
+        # local build_time=$(date -d "${build_start_time} UTC")
+        # printf "Build started at %s" "${build_time}"
+        #   time_was_printed=true
+        # elif [ "${time_was_printed}" == false ]; then
+        #     echo "Waiting for Bitrise worker to start the build"
+        #     time_was_printed=true
+        # fi
+
+        if [ "${build_start_time}" != "null" ]; then
+            # TZ=EST ${build_start_time}
+            local build_time=$(TZ=EST ${build_start_time})
+            printf "Build started at %s" "${build_time}"
+            time_was_printed=true
+        elif [ "${time_was_printed}" == false ]; then
+            echo "Waiting for Bitrise worker to start the build"
+            time_was_printed=true
+        fi
         build_status=$(echo "$response" | jq ".data .status")
     done
-
     if [ "$build_status" = 1 ]; then exit_code=0; else exit_code=1; fi
 }
 
@@ -212,7 +234,7 @@ get_logs(){
 if [ "$0" = "$BASH_SOURCE" ] && [ -z "${TESTING_ENABLED}" ]; then
     intro
     trigger_build
-    get_build_status
+    get_build_status 
     get_log_info
     get_logs "$log_url"
     build_status_message "$build_status"

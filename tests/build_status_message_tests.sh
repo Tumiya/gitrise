@@ -27,10 +27,11 @@ testBuildAbortedMessage() {
     assertEquals "Message for build aborted did not match." "$expected_message" "$actual_message"
 }
 
- testInvalidBuildStatusMessage() {
+testInvalidBuildStatusMessage() {
     local expected_message="Invalid build status 🤔"
     local actual_message=$(build_status_message "")
     assertEquals "Message for invalid build status did not match." "$expected_message" "$actual_message"
 }
+
 
 . ./tests/shunit2
