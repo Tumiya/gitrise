@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091,SC2155,SC2154
-# Not following: (error message here)
+# shellcheck disable=SC1091,SC2155,SC2154,SC2034
+# Not following: (sourced file was not specified as input)
 # Declare and assign separately to avoid masking return values.
 # var is referenced but not assigned.
+# variable appears unused. Verify use (or export if used externally)
 
 source tests/test_helper.sh
 
@@ -47,7 +48,7 @@ testLoggingWaitingForWorkerMessage() {
     local result=$(get_build_status wait-for-worker-build-status.json)
     assertContains "message did not contain the expected content." "${result}" "${expected_content}"
 }
-
+SC2034
 tearDown() {
     #resetting the global variables
     build_slug=""

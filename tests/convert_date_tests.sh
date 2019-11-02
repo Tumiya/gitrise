@@ -1,5 +1,9 @@
 #! /bin/bash
 
+# shellcheck disable=SC1091,SC2155
+# Not following: (sourced file was not specified as input)
+# Declare and assign separately to avoid masking return values.
+
 source ./convert_date.sh -t
 
 testNoInputDate(){
