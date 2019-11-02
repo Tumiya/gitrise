@@ -1,6 +1,6 @@
 name: PR-workflow
 
-on: pull_request
+on: push
 
 jobs:
   lint:
