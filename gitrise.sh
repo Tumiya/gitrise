@@ -9,6 +9,7 @@ build_slug=""
 build_url=""
 build_status=0
 previous_build_status_text=""
+previous_build_start_time=""
 exit_code=""
 log_url=""
 
@@ -150,30 +151,24 @@ get_build_status () {
             response=$(< ./testdata/"$1")
         fi
         local current_build_status_text=$(echo "$response" | jq ".data .status_text" | sed 's/"//g')
-        local build_start_time=$(echo "$response" | jq ".data .started_on_worker_at" | sed 's/"//g')
+        local current_build_start_time=$(echo "$response" | jq ".data .started_on_worker_at" | sed 's/"//g')
 
         if [ "$previous_build_status_text" != "$current_build_status_text" ]; then
             echo "Build $current_build_status_text"
             previous_build_status_text="${current_build_status_text}"
         fi
 
-        # if [ "${build_start_time}" != "null" ] && [ "${time_was_printed}" == false ]; then
-        # local build_time=$(date -d "${build_start_time} UTC")
-        # printf "Build started at %s" "${build_time}"
-        #   time_was_printed=true
-        # elif [ "${time_was_printed}" == false ]; then
-        #     echo "Waiting for Bitrise worker to start the build"
-        #     time_was_printed=true
-        # fi
+        if [ "$current_build_start_time" != "$previous_build_start_time" ]; then
 
-        if [ "${build_start_time}" != "null" ]; then
-            # TZ=EST ${build_start_time}
-            local build_time=$(TZ=EST ${build_start_time})
-            printf "Build started at %s" "${build_time}"
-            time_was_printed=true
-        elif [ "${time_was_printed}" == false ]; then
-            echo "Waiting for Bitrise worker to start the build"
-            time_was_printed=true
+            if [ "${current_build_start_time}" != "null" ]; then
+                source ./convert_date.sh
+                local build_time=$(convert_date "${current_build_start_time}")
+                printf "Build started on %s" "${build_time}"
+                previous_build_start_time="$current_build_start_time"
+            else
+                echo "Waiting for Bitrise worker to start the build"
+                previous_build_start_time="$current_build_start_time"     
+            fi     
         fi
         build_status=$(echo "$response" | jq ".data .status")
     done
@@ -251,3 +246,5 @@ if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
     build_status_message "$build_status"
     exit ${exit_code}
 fi
+
+

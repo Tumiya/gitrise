@@ -37,7 +37,7 @@ testFetchingBuildStatusText(){
 
 testExitCodeAssignmentFromBuildStatus(){
     local expected_code=1
-    get_build_status  build_status_response.json 
+    get_build_status  build_status_response.json > /dev/null
     local actual_code=${exit_code}
     assertEquals "exit code did not match." "${expected_code}" "${actual_code}"
 }
@@ -49,8 +49,10 @@ testLoggingWaitingForWorkerMessage() {
 }
 
 testLoggingBuildStartTime(){
-    given time = 2019-10-01T02:35:47Z
-    correct time = 10:37 PM monday
+    local expected_date="Build started on Thu Oct 31 21:02:11 EDT 2019"
+    local actual=$(get_build_status  build_status_response.json)
+    
+    assertContains "message did not contain the expected content." "$actual" "${expected_content}"
 }
 
 tearDown() {
