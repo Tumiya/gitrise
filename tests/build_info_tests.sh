@@ -48,13 +48,6 @@ testLoggingWaitingForWorkerMessage() {
     assertContains "message did not contain the expected content." "${result}" "${expected_content}"
 }
 
-testLoggingBuildStartTime(){
-    local expected_date="Build started on Thu Oct 31 21:02:11 EDT 2019"
-    local actual=$(get_build_status  build_status_response.json)
-    
-    assertContains "message did not contain the expected content." "$actual" "${expected_content}"
-}
-
 tearDown() {
     #resetting the global variables
     build_slug=""

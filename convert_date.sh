@@ -4,7 +4,7 @@
 # disabling because we are using optioanl parameters.
 
 TEST_MODE=""
-if [ $1 = "-t" ]; then TEST_MODE="on"; fi
+if [ "$1" = "-t" ]; then TEST_MODE="on"; fi
 
 convert_date(){
     if [ -n "$1" ]; then
@@ -14,13 +14,15 @@ convert_date(){
                 date -d "$input_date"
                 ;;
             "darwin"*)
-                if [ "$TEST_MODE" = "on" ]; then gdate -d "$input_date"
+                if [ "$TEST_MODE" = "on" ]; then 
+                    gdate -d "$input_date"
                 else 
+                    #shellcheck disable=SC2078
                     [ dependency_is_installed ] && gdate -d "$input_date" || echo "Could not find gdate. Date conversion cannot happen without gdate." 
                 fi
                 ;;
             *)
-                echo "date conversion is not supported for $OSTYPE operating system '"  
+                echo "date conversion is not supported for $OSTYPE operating system."  
                 ;;
         esac 
     else

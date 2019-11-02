@@ -141,7 +141,6 @@ trigger_build () {
 # shellcheck disable=SC2120
 get_build_status () {
     local response=""
-    local time_was_printed=false
     while [ "${build_status}" = 0 ]; do
         if [ -z "${TESTING_ENABLED}" ]; then
             sleep 10
