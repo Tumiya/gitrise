@@ -6,8 +6,8 @@
 # var is referenced but not assigned.
 # variable appears unused. Verify use (or export if used externally)
 
-source tests/test_helper.sh
-
+ source ./gitrise.sh -t
+ 
 testFetchingBuildSlug() {
     local expected_slug="546yw9284a8g1205"
     trigger_build "successful" > /dev/null

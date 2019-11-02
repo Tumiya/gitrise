@@ -3,7 +3,8 @@
 # shellcheck disable=SC1091,SC2155
 # Not following: (error message here)
 # Declare and assign separately to avoid masking return values.
-source ./tests/test_helper.sh
+
+source ./gitrise.sh -t
 
 testBuildTimedOutMessage() {
     local expected_message="Build TIMED OUT based on mobile trigger internal setting"
