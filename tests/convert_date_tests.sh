@@ -18,7 +18,7 @@ testDateConversionOnInvalidOS(){
     assertEquals "Messages did not match" "$expected_message" "$actual_message"
 }
 
-testDateConversionOnMac(){
+testDateConversion(){
     local expected_date="Thu Oct 31 21:02:11 EDT 2019"
     local actual_date=$(convert_date 2019-11-01T01:02:11Z)
     assertEquals "Dates did not match" "$expected_date" "$actual_date"

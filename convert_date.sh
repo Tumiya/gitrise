@@ -11,7 +11,7 @@ convert_date(){
         local input_date="$1"
         case "$OSTYPE" in 
             "linux-gnu")
-                date -d "$input_date"
+                TZ="EST5EDT" date -d "$input_date"
                 ;;
             "darwin"*)
                 if [ "$TEST_MODE" = "on" ]; then 
