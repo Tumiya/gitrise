@@ -4,7 +4,7 @@
 # Not following: (error message here)
 # Declare and assign separately to avoid masking return values.
 
-source ./gitrise.sh -t
+source ./src/gitrise.sh -t
 
 testBuildTimedOutMessage() {
     local expected_message="Build TIMED OUT based on mobile trigger internal setting"

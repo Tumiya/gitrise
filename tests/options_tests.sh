@@ -4,7 +4,7 @@
 # Not following: (error message here)
 # Declare and assign separately to avoid masking return values.
 
-source ./gitrise.sh -t
+source ./src/gitrise.sh -t
 
 testEnvVars() {
     local expected="[{\"mapped_to\":\"CODE_COVERAGE\",\"value\":\"true\",\"is_expand\":true},{\"mapped_to\":\"ENVIRONMENT\",\"value\":\"UAT\",\"is_expand\":true}]"
@@ -26,13 +26,13 @@ testPassingFileAsEnvVar() {
 
 testHelp(){
     local expected=$(usage)
-    local actual=$(./gitrise.sh -h)
+    local actual=$(./src/gitrise.sh -h)
     assertEquals "$expected" "$actual"
 }
 
 testVersion(){
     local expected_version="$VERSION"
-    local result=$(./gitrise.sh -v)
+    local result=$(./src/gitrise.sh -v)
     local actual_version=$(echo "$result" | grep -o '[0-9]\{1,\}.[0-9]\{1,\}.[0-9]\{1,\}')
     assertEquals "${expected_version}" "${actual_version}"
 }
@@ -43,14 +43,14 @@ testTestingModeOption() {
 
 testBranchOption(){
     local expected_branch="test_branch"
-    source ./gitrise.sh -t -b test_branch
+    source ./src/gitrise.sh -t -b test_branch
     local actual_branch="$BRANCH"
     assertEquals "${expected_branch}" "${actual_branch}"
 }
 
 testWrongUsage(){
     local expected=$(printf "Invalid option '-w,'\n%s" "$(usage)")
-    local result=$(./gitrise.sh -t -w, test_workflow)
+    local result=$(./src/gitrise.sh -t -w, test_workflow)
     assertEquals "$expected" "$result"
 }
  

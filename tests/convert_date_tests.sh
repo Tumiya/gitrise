@@ -4,7 +4,7 @@
 # Not following: (sourced file was not specified as input)
 # Declare and assign separately to avoid masking return values.
 
-source ./convert_date.sh -t
+source ./src/convert_date.sh -t
 
 testNoInputDate(){
     local expected_response="no input date received"
