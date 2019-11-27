@@ -162,7 +162,7 @@ get_build_status () {
             if [ "${current_build_start_time}" != "null" ]; then
                 # shellcheck disable=SC1091
                 # Not following: (sourced file was not specified as input)
-                source ./convert_date.sh
+                source ./src/convert_date.sh
                 local build_time=$(convert_date "${current_build_start_time}")
                 printf "Build started on %s" "${build_time}"
                 previous_build_start_time="$current_build_start_time"

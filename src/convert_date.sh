@@ -4,7 +4,8 @@
 # disabling because we are using optioanl parameters.
 
 TEST_MODE=""
-if [ "$1" = "-t" ]; then TEST_MODE="on"; fi
+
+[ "$1" = "-t" ] && TEST_MODE="on"
 
 convert_date(){
     if [ -n "$1" ]; then
