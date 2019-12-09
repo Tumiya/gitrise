@@ -5,12 +5,15 @@
 
 TEST_MODE=""
 
-[ "$1" = "-t" ] && TEST_MODE="on"
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+   TZ="EST5EDT"
+   DATE_CMD=date
+else
+   DATE_CMD=gdate
+fi
 
-convert_date(){
-    if [ -n "$1" ]; then
-        local input_date="$1"
-        case "$OSTYPE" in 
+
+case "$OSTYPE" in 
             "linux-gnu")
                 TZ="EST5EDT" date -d "$input_date"
                 ;;
@@ -25,13 +28,24 @@ convert_date(){
             *)
                 echo "date conversion is not supported for $OSTYPE operating system."  
                 ;;
-        esac 
+        esac
+[ "$1" = "-t" ] && TEST_MODE="on"
+environment=$(printenv)
+echo "GLOBAL ENV: $environment"
+
+convert_date(){
+    echo "ENV in Convert_date: $environment"
+    if [ -n "$1" ]; then
+        local input_date="$1"
+         
     else
         echo "no input date received"
     fi
 }
 
 dependency_is_installed(){
+        # echo "ENV in dependency_installed: $env"
+
     if [ "$TEST_MODE" = "on" ]; then 
         [ "$1" = "yes" ] && code=0 || code=1
     else

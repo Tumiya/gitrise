@@ -2,6 +2,9 @@
 
 A Bitrise trigger in pure `bash` 🎉!
 
+## System Requirements
+gitrise runs on both Linux and macOS. It requires bash, jq. If you are using macOS, make sure to install coreutils using ```brew install coreutils```
+
 
 ## Usage
 1. ```chmod +x gitrise.sh```  
