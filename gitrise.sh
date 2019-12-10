@@ -26,7 +26,6 @@ usage() {
 }
 
 # parsing space separated options
-POSITIONAL=()
 while [ $# -gt 0 ]; do
     key="$1"
     case $key in
@@ -65,14 +64,10 @@ while [ $# -gt 0 ]; do
     *) 
         echo "Invalid option '$1'"
         usage
-        POSITIONAL+=("$1")
         exit 1
     ;;
     esac
 done
-
-# restore positional parameters
-set -- "${POSITIONAL[@]}"
 
 # map environment variables to objects Bitrise will accept. 
 # ENV_STRING is passed as argument
@@ -125,10 +120,12 @@ trigger_build () {
     else
         result=$(<./testdata/"$1"_build_trigger_response.json)
     fi
-    status=$(echo "$result" | jq ".status" | sed 's/"//g' ) 
+    status=$(echo "$result" | jq ".status" | sed 's/"//g' )
     if [ "$status" != "ok" ]; then
         msg=$(echo "$result" | jq ".message" | sed 's/"//g')
-        echo "ERROR: $msg"
+        printf "%s" "ERROR: $msg"
+        printf "%s" "\nCOMMAND:$command"
+        log "${command%'--data'*}" "$result"
         exit 1
     else 
         build_url=$(echo "$result" | jq ".build_url" | sed 's/"//g')
@@ -155,7 +152,12 @@ get_build_status () {
         build_status=$(echo "$response" | jq ".data .status")
     done
 
-    if [ "$build_status" = 1 ]; then exit_code=0; else exit_code=1; fi
+    if [ "$build_status" = 1 ]; then 
+        exit_code=0 
+    else 
+        log "${command%'--header'*}" "$response"
+        exit_code=1
+    fi
 }
 
 build_status_message () {
@@ -199,9 +201,13 @@ get_log_info(){
         log_is_archived=$(echo "$response" | jq ".is_archived")
         ((counter++))
     done
+    #test
+            log "${command%'--header'*}" "$response"
+    ###
     log_url=$(echo "$response" | jq ".expiring_raw_log_url" | sed 's/"//g')
     if ! "$log_is_archived" || [ -z "$log_url" ]; then
         echo "LOGS WERE NOT AVAILABLE - go to $build_url to see log."
+        log "${command%'--header'*}" "$response"
         exit ${exit_code}
     fi
 }
@@ -217,6 +223,15 @@ get_logs(){
     echo "==============================  Bitrise Logs End  =============================="
 
 }
+
+log(){
+    local request="$1"
+    local response="$2"
+    secured_request=${request/\/'apps'\/*\//\/'apps'\/'[REDACTED]'\/}
+
+    printf "%b" "\n\nREQUEST:${secured_request}\nRESPONSE:$response\n\n" >> gitrise.log
+
+}
 # No function execution when the script is sourced 
 # shellcheck disable=SC2119
 # disables "use foo "$@" if function's $1 should mean script's $1."
@@ -229,3 +244,4 @@ if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
     build_status_message "$build_status"
     exit ${exit_code}
 fi
+
