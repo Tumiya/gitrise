@@ -1,5 +1,5 @@
 #! /bin/bash
 
 oneTimeSetUp(){
-    source ./gitrise.sh -t
+    source ./gitrise.sh -t -d
 }

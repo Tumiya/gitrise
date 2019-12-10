@@ -1,6 +1,6 @@
 #!/bin/bash
 # shellcheck disable=SC2155
-# disbales "Declare and assign separately to avoid masking return values."
+# disables "Declare and assign separately to avoid masking return values."
 
 VERSION="0.4.0"
 APP_NAME="Gitrise Trigger"
@@ -22,6 +22,8 @@ usage() {
     echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -s, --slug          <string>    Bitrise project slug"
+    echo "  -v, --version                   App version"
+    echo "  -d, --debug                     Debug mode enabled"
     echo "  -h, --help          <string>    Print this help text"
 }
 
@@ -30,8 +32,8 @@ POSITIONAL=()
 while [ $# -gt 0 ]; do
     key="$1"
     case $key in
-    -v|--version)
-        echo "Trigger version $VERSION"
+    -V|--version)
+        echo "$APP_NAME version $VERSION"
         exit 0
     ;;
     -w|--workflow)
@@ -62,6 +64,10 @@ while [ $# -gt 0 ]; do
         TESTING_ENABLED="true"
         shift
     ;;
+    -d|--debug)
+        DEBUG="true"
+        shift
+    ;;
     *) 
         echo "Invalid option '$1'"
         usage
@@ -73,6 +79,11 @@ done
 
 # restore positional parameters
 set -- "${POSITIONAL[@]}"
+
+# Create temp directory if debugging mode enabled
+if [ "${DEBUG}" == "true" ]; then
+    mkdir -p gitrise_temp
+fi
 
 # map environment variables to objects Bitrise will accept. 
 # ENV_STRING is passed as argument
@@ -103,13 +114,7 @@ process_env_vars () {
     echo "[${result/%,}]"
 }
 
-intro () {
-    if [ "${TESTING_ENABLED}" = "true" ]; then
-        echo "Gitrise is running in testing mode"
-    else
-        printf "%s VERSION %s \nLaunched on $(date)\n" "$APP_NAME" "$VERSION"
-    fi
-}
+
 # shellcheck disable=SC2120
 # disables "foo references arguments, but none are ever passed."
 trigger_build () { 
@@ -125,6 +130,11 @@ trigger_build () {
     else
         result=$(<./testdata/"$1"_build_trigger_response.json)
     fi
+
+    if [ "${DEBUG}" == "true" ]; then
+        printf "\n$result\n" >> gitrise_temp/trigger_build.log
+    fi
+
     status=$(echo "$result" | jq ".status" | sed 's/"//g' ) 
     if [ "$status" != "ok" ]; then
         msg=$(echo "$result" | jq ".message" | sed 's/"//g')
@@ -147,6 +157,11 @@ get_build_status () {
         else
             response=$(< ./testdata/build_status_response.json)
         fi
+
+        if [ "${DEBUG}" == "true" ]; then
+            printf "\n$response\n" >> gitrise_temp/get_build_status.log
+        fi
+
         local current_build_status_text=$(echo "$response" | jq ".data .status_text" | sed 's/"//g')
         if [ "$previous_build_status_text" != "$current_build_status_text" ]; then
             echo "Build $current_build_status_text"
@@ -196,12 +211,17 @@ get_log_info(){
         else
             response="$(< ./testdata/"$1"_log_info_response.json)"
         fi
+
+        if [ "${DEBUG}" == "true" ]; then
+            printf "%b" "\n$response\n" >> gitrise_temp/get_log_info.log
+        fi
+
         log_is_archived=$(echo "$response" | jq ".is_archived")
         ((counter++))
     done
     log_url=$(echo "$response" | jq ".expiring_raw_log_url" | sed 's/"//g')
     if ! "$log_is_archived" || [ -z "$log_url" ]; then
-        echo "LOGS WERE NOT AVAILABLE - go to $build_url to see log."
+        echo "[$(date +'%T')] LOGS WERE NOT AVAILABLE - go to $build_url to see log."
         exit ${exit_code}
     fi
 }
@@ -217,11 +237,11 @@ get_logs(){
     echo "==============================  Bitrise Logs End  =============================="
 
 }
+
 # No function execution when the script is sourced 
 # shellcheck disable=SC2119
 # disables "use foo "$@" if function's $1 should mean script's $1."
 if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
-    intro
     trigger_build
     get_build_status
     get_log_info

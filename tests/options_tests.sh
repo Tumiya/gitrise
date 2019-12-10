@@ -31,7 +31,7 @@ testHelp(){
 
 testVersion(){
     local expected_version="$VERSION"
-    local result=$(./gitrise.sh -v)
+    local result=$(./gitrise.sh -V)
     local actual_version=$(echo "$result" | grep -o '[0-9]\{1,\}.[0-9]\{1,\}.[0-9]\{1,\}')
     assertEquals "${expected_version}" "${actual_version}"
 }
