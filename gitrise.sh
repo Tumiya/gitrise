@@ -22,7 +22,9 @@ usage() {
     echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -s, --slug          <string>    Bitrise project slug"
-    echo "  -h, --help          <string>    Print this help text"
+    echo "  -v, --version                   App version"
+    echo "  -d, --debug                     Debug mode enabled"
+    echo "  -h, --help                      Print this help text"
 }
 
 # parsing space separated options
