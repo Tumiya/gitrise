@@ -32,7 +32,7 @@ while [ $# -gt 0 ]; do
     key="$1"
     case $key in
     -v|--version)
-        echo "Trigger version $VERSION"
+        echo "$APP_NAME version $VERSION"
         exit 0
     ;;
     -w|--workflow)
@@ -63,6 +63,10 @@ while [ $# -gt 0 ]; do
         TESTING_ENABLED="true"
         shift
     ;;
+     -d|--debug)
+        DEBUG="true"
+        shift
+    ;;
     *) 
         echo "Invalid option '$1'"
         usage
@@ -70,6 +74,9 @@ while [ $# -gt 0 ]; do
     ;;
     esac
 done
+
+# Create temp directory if debugging mode enabled
+[ "${DEBUG}" == "true" ] && mkdir -p gitrise_temp
 
 # map environment variables to objects Bitrise will accept. 
 # ENV_STRING is passed as argument
@@ -100,13 +107,6 @@ process_env_vars () {
     echo "[${result/%,}]"
 }
 
-intro () {
-    if [ "${TESTING_ENABLED}" = "true" ]; then
-        echo "Gitrise is running in testing mode"
-    else
-        printf "%s VERSION %s \nLaunched on $(date)\n" "$APP_NAME" "$VERSION"
-    fi
-}
 # shellcheck disable=SC2120
 # disables "foo references arguments, but none are ever passed."
 trigger_build () { 
@@ -118,16 +118,17 @@ trigger_build () {
         local command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
                 --data '$payload' \
                 --header 'Authorization: $ACCESS_TOKEN'"
-        result=$(eval "${command}") 
+        response=$(eval "${command}") 
     else
-        result=$(<./testdata/"$1"_build_trigger_response.json)
+        response=$(<./testdata/"$1"_build_trigger_response.json)
     fi
+    [ "${DEBUG}" == "true" ] && log "${command%'--data'*}" "$response"
+
     status=$(echo "$result" | jq ".status" | sed 's/"//g' )
     if [ "$status" != "ok" ]; then
         msg=$(echo "$result" | jq ".message" | sed 's/"//g')
         printf "%s" "ERROR: $msg"
         printf "%s" "\nCOMMAND:$command"
-        log "${command%'--data'*}" "$result"
         exit 1
     else 
         build_url=$(echo "$result" | jq ".build_url" | sed 's/"//g')
@@ -146,6 +147,8 @@ get_build_status () {
         else
             response=$(< ./testdata/build_status_response.json)
         fi
+        [ "${DEBUG}" == "true" ] && log "${command%'--data'*}" "$response"
+
         local current_build_status_text=$(echo "$response" | jq ".data .status_text" | sed 's/"//g')
         if [ "$previous_build_status_text" != "$current_build_status_text" ]; then
             echo "Build $current_build_status_text"
@@ -154,12 +157,7 @@ get_build_status () {
         build_status=$(echo "$response" | jq ".data .status")
     done
 
-    if [ "$build_status" = 1 ]; then 
-        exit_code=0 
-    else 
-        log "${command%'--header'*}" "$response"
-        exit_code=1
-    fi
+    if [ "$build_status" = 1 ]; then exit_code=0; else exit_code=1; fi
 }
 
 build_status_message () {
@@ -200,16 +198,14 @@ get_log_info(){
         else
             response="$(< ./testdata/"$1"_log_info_response.json)"
         fi
+        [ "${DEBUG}" == "true" ] && log "${command%'--data'*}" "$response"
+
         log_is_archived=$(echo "$response" | jq ".is_archived")
         ((counter++))
     done
-    #test
-            log "${command%'--header'*}" "$response"
-    ###
     log_url=$(echo "$response" | jq ".expiring_raw_log_url" | sed 's/"//g')
     if ! "$log_is_archived" || [ -z "$log_url" ]; then
         echo "LOGS WERE NOT AVAILABLE - go to $build_url to see log."
-        log "${command%'--header'*}" "$response"
         exit ${exit_code}
     fi
 }
@@ -231,9 +227,10 @@ log(){
     local response="$2"
     secured_request=${request/\/'apps'\/*\//\/'apps'\/'[REDACTED]'\/}
 
-    printf "%b" "\n\nREQUEST:${secured_request}\nRESPONSE:$response\n\n" >> gitrise.log
+    printf "%b" "\n\n[$(date +'%T')] REQUEST:${secured_request}\n[$(date +'%T')] RESPONSE:$response\n\n" >> gitrise_temp/gitrise.log
 
 }
+
 # No function execution when the script is sourced 
 # shellcheck disable=SC2119
 # disables "use foo "$@" if function's $1 should mean script's $1."
