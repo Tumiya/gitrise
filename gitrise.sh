@@ -110,7 +110,7 @@ process_env_vars () {
 # shellcheck disable=SC2120
 # disables "foo references arguments, but none are ever passed."
 trigger_build () { 
-    local result=""
+    local response=""
     if [ -z "${TESTING_ENABLED}" ]; then
         local environments=$(process_env_vars "$ENV_STRING")   
         local payload="{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"branch\":\"$BRANCH\",\"workflow_id\":\"$WORKFLOW\",\"environments\":$environments \
@@ -123,16 +123,15 @@ trigger_build () {
         response=$(<./testdata/"$1"_build_trigger_response.json)
     fi
     [ "${DEBUG}" == "true" ] && log "${command%'--data'*}" "$response"
-
-    status=$(echo "$result" | jq ".status" | sed 's/"//g' )
+    
+    status=$(echo "$response" | jq ".status" | sed 's/"//g' )
     if [ "$status" != "ok" ]; then
-        msg=$(echo "$result" | jq ".message" | sed 's/"//g')
+        msg=$(echo "$response" | jq ".message" | sed 's/"//g')
         printf "%s" "ERROR: $msg"
-        printf "%s" "\nCOMMAND:$command"
         exit 1
     else 
-        build_url=$(echo "$result" | jq ".build_url" | sed 's/"//g')
-        build_slug=$(echo "$result" | jq ".build_slug" | sed 's/"//g')
+        build_url=$(echo "$response" | jq ".build_url" | sed 's/"//g')
+        build_slug=$(echo "$response" | jq ".build_slug" | sed 's/"//g')
     fi
     printf "\nHold on... We're about to liftoff! 🚀\n \nBuild URL: %s\n" "${build_url}"
 }
