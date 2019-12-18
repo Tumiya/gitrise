@@ -5,7 +5,7 @@
 # Declare and assign separately to avoid masking return values.
 # var is referenced but not assigned.
 
-source tests/test_helper.sh
+source ./gitrise.sh -t
 
 testFetchingBuildSlug() {
     local expected_slug="546yw9284a8g1205"

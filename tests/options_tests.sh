@@ -3,7 +3,7 @@
 # shellcheck disable=SC1091,SC2155
 # Not following: (error message here)
 # Declare and assign separately to avoid masking return values.
-source ./tests/test_helper.sh
+source ./gitrise.sh -t
 
 testEnvVars() {
     local expected="[{\"mapped_to\":\"CODE_COVERAGE\",\"value\":\"true\",\"is_expand\":true},{\"mapped_to\":\"ENVIRONMENT\",\"value\":\"UAT\",\"is_expand\":true}]"
