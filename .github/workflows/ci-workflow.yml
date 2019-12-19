@@ -9,7 +9,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Lint
-        uses: zbeekman/ShellCheck-Linter-Action@v1.0.1
+        uses: azohra/shell-linter@v0.2.0
  
   unit_tests:
     runs-on: ubuntu-latest
