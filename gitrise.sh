@@ -2,7 +2,7 @@
 # shellcheck disable=SC2155
 # disbales "Declare and assign separately to avoid masking return values."
 
-VERSION="0.4.0"
+VERSION="0.5.0"
 APP_NAME="Gitrise Trigger"
 
 build_slug=""
@@ -230,7 +230,7 @@ log(){
     local log_file="$3"
 
     secured_request=${request/\/'apps'\/*\//\/'apps'\/'[REDACTED]'\/}
-    printf "%b" "\n[$(date +'%T')] REQUEST: ${secured_request}\n[$(date +'%T')] RESPONSE: $response\n" >> ./gitrise_temp/"$log_file"
+    printf "%b" "\n[$(TZ="EST6EDT" date +'%T')] REQUEST: ${secured_request}\n[$(TZ="EST6EDT" date +'%T')] RESPONSE: $response\n" >> ./gitrise_temp/"$log_file"
 }
 
 # No function execution when the script is sourced 
