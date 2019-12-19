@@ -16,9 +16,7 @@ Usage: gitrise [options]
   -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
   -a, --access-token  <string>    Bitrise access token
   -s, --slug          <string>    Bitrise project slug
-  -v, --version                   App version
-  -d, --debug                     Debug mode enabled
-  -h, --help                      Print this help text
+  -h, --help          <string>    Print this help text
 ```
 
 ## API Reference
