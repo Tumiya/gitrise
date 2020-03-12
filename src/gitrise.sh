@@ -143,9 +143,9 @@ get_build_status () {
     local response=""
     while [ "${build_status}" = 0 ]; do
         if [ -z "${TESTING_ENABLED}" ]; then
-            sleep 30
             local command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug --header 'Authorization: $ACCESS_TOKEN'"
             response=$(eval "${command}")
+            sleep 30
         else
             response=$(< ./testdata/"$1")
         fi
@@ -153,21 +153,17 @@ get_build_status () {
         local current_build_start_time=$(echo "$response" | jq ".data .started_on_worker_at" | sed 's/"//g')
 
         if [ "$previous_build_status_text" != "$current_build_status_text" ]; then
-            echo "Build $current_build_status_text"
+            echo "Build status: $current_build_status_text"
             previous_build_status_text="${current_build_status_text}"
         fi
 
         if [ "$current_build_start_time" != "$previous_build_start_time" ]; then
-
             if [ "${current_build_start_time}" != "null" ]; then
                 # shellcheck disable=SC1091
                 # Not following: (sourced file was not specified as input)
                 source ./src/convert_date.sh
                 local build_time=$(convert_date "${current_build_start_time}")
-                printf "Build started on %s" "${build_time}"
-                previous_build_start_time="$current_build_start_time"
-            else
-                echo "Waiting for Bitrise worker to start the build"
+                printf "Build started on %b" "${build_time}\n"
                 previous_build_start_time="$current_build_start_time"     
             fi     
         fi

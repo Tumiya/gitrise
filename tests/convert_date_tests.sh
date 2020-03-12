@@ -7,7 +7,7 @@
 source ./src/convert_date.sh -t
 
 testNoInputDate(){
-    local expected_response="no input date received"
+    local expected_response="Invalid input date"
     local actual=$(convert_date)
     assertEquals "Messages did not match" "$expected_response" "$actual"
 }

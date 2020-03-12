@@ -48,7 +48,7 @@ testLoggingWaitingForWorkerMessage() {
     local result=$(get_build_status wait-for-worker-build-status.json)
     assertContains "message did not contain the expected content." "${result}" "${expected_content}"
 }
-SC2034
+
 tearDown() {
     #resetting the global variables
     build_slug=""
