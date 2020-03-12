@@ -6,7 +6,7 @@
 [ "$1" = "-t" ] && TESTING_ENABLED="true"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-   DATE_CMD='TZ="EST5EDT" date'
+   DATE_CMD="TZ='EST5EDT' date"
 else
    DATE_CMD="gdate"
 fi
