@@ -31,7 +31,7 @@ testFailureUponUsingWrongOptions() {
 }
 
 testFetchingBuildStatusText(){
-    local expected_content="Build error"
+    local expected_content="Build status: error"
     local result=$(get_build_status  build_status_response.json)
     assertContains "Build status text did not match." "$result" "${expected_content}" 
 }
@@ -41,12 +41,6 @@ testExitCodeAssignmentFromBuildStatus(){
     get_build_status  build_status_response.json > /dev/null
     local actual_code=${exit_code}
     assertEquals "exit code did not match." "${expected_code}" "${actual_code}"
-}
-
-testLoggingWaitingForWorkerMessage() {
-    local expected_content="Waiting for Bitrise worker to start the build"
-    local result=$(get_build_status wait-for-worker-build-status.json)
-    assertContains "message did not contain the expected content." "${result}" "${expected_content}"
 }
 
 tearDown() {

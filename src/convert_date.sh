@@ -16,7 +16,6 @@ convert_date(){
         input_date=$1
         case "$OSTYPE" in
             "linux-gnu"|"darwin"*)
-                echo "TZ: $TZ"
                 $DATE_CMD -d "$input_date"
                 ;;
             *)
