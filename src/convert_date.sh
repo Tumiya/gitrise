@@ -12,29 +12,12 @@ else
    DATE_CMD="gdate"
 fi
 
-# case "$OSTYPE" in 
-#     "linux-gnu")
-#         TZ="EST5EDT" date -d "$input_date"
-#         ;;
-#     "darwin"*)
-#         if [ "$TEST_MODE" = "on" ]; then 
-#             gdate -d "$input_date"
-#         else 
-#             #shellcheck disable=SC2078
-#             [ dependency_is_installed ] && gdate -d "$input_date" || echo "Could not find gdate. Date conversion cannot happen without gdate." 
-#         fi
-#         ;;
-#     *)
-#         echo "date conversion is not supported for $OSTYPE operating system."  
-#         ;;
-# esac
-
-
 convert_date(){
     if [ -n "$1" ]; then
         input_date=$1
         case "$OSTYPE" in
             "linux-gnu"|"darwin"*)
+                echo "TZ: $TZ"
                 $DATE_CMD -d "$input_date"
                 ;;
             *)
