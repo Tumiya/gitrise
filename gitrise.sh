@@ -2,7 +2,7 @@
 # shellcheck disable=SC2155
 # disbales "Declare and assign separately to avoid masking return values."
 
-VERSION="0.5.0"
+VERSION="0.6.0"
 APP_NAME="Gitrise Trigger"
 
 build_slug=""
@@ -143,7 +143,7 @@ get_build_status () {
     local response=""
     while [ "${build_status}" = 0 ]; do
         if [ -z "${TESTING_ENABLED}" ]; then
-            sleep 10
+            sleep 30
             local command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug --header 'Authorization: $ACCESS_TOKEN'"
             response=$(eval "${command}")
         else
