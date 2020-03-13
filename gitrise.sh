@@ -1,6 +1,8 @@
 #!/bin/bash
 # shellcheck disable=SC2155
 # disbales "Declare and assign separately to avoid masking return values."
+# shellcheck disable=SC2120
+# disables "foo references arguments, but none are ever passed."
 
 VERSION="0.5.0"
 APP_NAME="Gitrise Trigger"
@@ -110,8 +112,6 @@ process_env_vars () {
     echo "[${result/%,}]"
 }
 
-# shellcheck disable=SC2120
-# disables "foo references arguments, but none are ever passed."
 trigger_build () { 
     local response=""
     if [ -z "${TESTING_ENABLED}" ]; then
@@ -120,7 +120,7 @@ trigger_build () {
         }}" 
         local command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
                 --data '$payload' \
-                --header 'Authorization: $ACCESS_TOKEN'"
+                --header 'Accept: application/json' --header 'Authorization: $ACCESS_TOKEN'"
         response=$(eval "${command}") 
     else
         response=$(<./testdata/"$1"_build_trigger_response.json)
@@ -141,25 +141,43 @@ trigger_build () {
 
 get_build_status () {
     local response=""
+    local counter=0
+    local retry=3
+    local polling_interval=30
     while [ "${build_status}" = 0 ]; do
         if [ -z "${TESTING_ENABLED}" ]; then
-            sleep 30
-            local command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug --header 'Authorization: $ACCESS_TOKEN'"
+            sleep "$polling_interval"
+            local command="curl --silent -X GET -w \"status_code:%{http_code}\" https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug \
+                --header 'Accept: application/json' --header 'Authorization: $ACCESS_TOKEN'"
             response=$(eval "${command}")
         else
-            response=$(< ./testdata/build_status_response.json)
+            response=$(< ./testdata/"$1")
         fi
-        [ "$DEBUG" == "true" ] && log "${command%'--header'*}" "$response" "get_build_status.log"
+        [ "$DEBUG" == "true" ] && log "${command%%'--header'*}" "$response" "get_build_status.log"
 
-        local current_build_status_text=$(echo "$response" | jq ".data .status_text" | sed 's/"//g')
-        if [ "$previous_build_status_text" != "$current_build_status_text" ]; then
-            echo "Build $current_build_status_text"
-            previous_build_status_text="${current_build_status_text}"
+        if [[ "$response" != *"<!DOCTYPE html>"* ]]; then
+            process "${response%'status_code'*}"    
+        else
+            if [[ $counter -lt $retry ]]; then
+                build_status=0
+                ((counter++))
+            else
+                echo "ERROR: Invalid response received from Bitrise API"
+                build_status="null" 
+            fi
         fi
-        build_status=$(echo "$response" | jq ".data .status")
     done
-
     if [ "$build_status" = 1 ]; then exit_code=0; else exit_code=1; fi
+}
+
+process (){
+    local response="$1"
+    local current_build_status_text=$(echo "$response" | jq ".data .status_text" | sed 's/"//g')
+    if [ "$previous_build_status_text" != "$current_build_status_text" ]; then
+        echo "Build $current_build_status_text"
+        previous_build_status_text="${current_build_status_text}"
+    fi
+    build_status=$(echo "$response" | jq ".data .status")
 }
 
 build_status_message () {
@@ -184,8 +202,6 @@ build_status_message () {
     esac
 }
 
-# shellcheck disable=SC2120
-# disables "foo references arguments, but none are ever passed."
 get_log_info(){
     local log_is_archived=false
     local counter=0
@@ -195,7 +211,8 @@ get_log_info(){
     while ! "$log_is_archived"  && [[ "$counter" -lt "$retry" ]]; do
         if [ -z "${TESTING_ENABLED}" ] ; then
             sleep "$polling_interval"
-            local command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug/log --header 'Authorization: $ACCESS_TOKEN'"
+            local command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug/log \
+                --header 'Accept: application/json' --header 'Authorization: $ACCESS_TOKEN'"
             response=$(eval "$command")
         else
             response="$(< ./testdata/"$1"_log_info_response.json)"
@@ -244,4 +261,3 @@ if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
     build_status_message "$build_status"
     exit ${exit_code}
 fi
-
