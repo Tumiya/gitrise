@@ -31,15 +31,28 @@ testFailureUponUsingWrongOptions() {
 
 testFetchingBuildStatusText(){
     local expected_text="Build error"
-    local actual_text=$(get_build_status )
+    local actual_text=$(get_build_status build_status_response.json)
     assertEquals "Build status text did not match." "$expected_text" "$actual_text" 
 }
 
 testExitCodeAssignmentFromBuildStatus(){
     local expected_code=1
-    get_build_status > /dev/null
+    get_build_status 'build_status_response.json' > /dev/null
     local actual_code=${exit_code}
     assertEquals "exit code did not match." "$expected_code" "$actual_code"
+}
+
+testFailureUponReceivingHTMLREsponse(){
+    local expected_message="ERROR: Invalid response received from Bitrise API"
+    local actual_message=$(get_build_status html_response)
+    local expected_code="1"
+
+    assertEquals "Build status text did not match." "$expected_message" "$actual_message"
+    assertEquals "Status codes did not match" "$expected_code" "${exit_code}"
+}
+
+tearDown(){
+  build_status=0
 }
 
 . ./tests/shunit2
