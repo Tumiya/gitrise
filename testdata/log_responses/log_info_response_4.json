@@ -1,0 +1,21 @@
+{
+  "expiring_raw_log_url": "https://bitrise_test_url.com",
+  "generated_log_chunks_num": 10,
+  "is_archived": true,
+  "log_chunks": [
+    {
+      "chunk": "[14:12:03]: Sending anonymous analytics information\n[14:12:03]: Learn more at https://docs.fastlane.tools/#metrics\n[14:12:03]: No personal or sensitive data is sent.\n[14:12:03]: You can disable this by adding `opt_out_usage` at the top of your Fastfile\n[14:12:03]: \u001b[32m------------------------------\u001b[0m\n[14:12:03]: \u001b[32m--- Step: default_platform ---\u001b[0m\n[14:12:03]: \u001b[32m------------------------------\u001b[0m\n[14:12:03]: \u001b[32mDriving the lane 'ios lint' 🚀\u001b[0m\n[14:12:03]: \u001b[32m---------------------------------------\u001b[0m\n[14:12:03]: \u001b[32m--- Step: mv ../Mintfile ./Mintfile ---\u001b[0m\n[14:12:03]: \u001b[32m---------------------------------------\u001b[0m\n[14:12:03]: \u001b[36m$ mv ../Mintfile ./Mintfile\u001b[0m\n[14:12:03]: \u001b[32m----------------------------\u001b[0m\n[14:12:03]: \u001b[32m--- Step: mint bootstrap ---\u001b[0m\n[14:12:03]: \u001b[32m----------------------------\u001b[0m\n[14:12:03]: \u001b[36m$ mint bootstrap\u001b[0m\n[14:12:03]: ▸ \u001b[35m🌱 2 packages up to date\u001b[0m\n[14:12:03]: \u001b[32m---------------------------------------\u001b[0m\n[14:12:03]: \u001b[32m--- Step: mv ./Mintfile ../Mintfile ---\u001b[0m\n[14:12:03]: \u001b[32m---------------------------------------\u001b[0m\n[14:12:03]: \u001b[36m$ mv ./Mintfile ../Mintfile\u001b[0m\n[14:12:03]: \u001b[32m-------------------------------------------------------------\u001b[0m\n[14:12:03]: \u001b[32m--- Step: mint which swiftlint -m ../Mintfile | tr -d '\n' ---\u001b[0m\n[14:12:03]: \u001b[32m-------------------------------------------------------------\u001b[0m\n[14:12:03]: \u001b[36m$ mint which swiftlint -m ../Mintfile | tr -d '\n'\u001b[0m\n[14:12:03]: ▸ \u001b[35m/usr/local/lib/mint/packages/github.com_realm_SwiftLint/build/0.39.2/swiftlint\u001b[0m\n[14:12:03]: \u001b[32m-----------------------\u001b[0m\n[14:12:03]: \u001b[32m--- Step: swiftlint ---\u001b[0m\n[14:12:03]: \u001b[32m-----------------------\u001b[0m\n[14:12:03]: \u001b[36m$ /usr/local/lib/mint/packages/github.com_realm_SwiftLint/build/0.39.2/swiftlint lint --reporter html > fastlane/swiftlint.html\u001b[0m\n",
+      "position": 10
+    },
+    {
+      "chunk": "/Mintfile ../Mintfile \n",
+      "position": 9
+    },
+    {
+      "chunk": "Update \n",
+      "position": 8
+    }
+  ],
+  "timestamp": "2020-07-25T21:54:27.564Z"
+}
+200

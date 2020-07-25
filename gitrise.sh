@@ -14,13 +14,14 @@ previous_build_status_text=""
 exit_code=""
 log_url=""
 
-usage() {
+usage () {
     echo ""
     echo "Usage: gitrise [options]"
     echo 
     echo "[options]"
     echo "  -w, --workflow      <string>    Bitrise Workflow"
     echo "  -b, --branch        <string>    Git Branch"
+    echo "  -f, --follow                    Continously pulls log updates from the current Workflow"
     echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -s, --slug          <string>    Bitrise project slug"
@@ -67,6 +68,10 @@ while [ $# -gt 0 ]; do
     ;;
      -d|--debug)
         DEBUG="true"
+        shift
+    ;;
+     -f|--follow)
+        FOLLOW="true"
         shift
     ;;
     *) 
@@ -170,7 +175,57 @@ get_build_status () {
     if [ "$build_status" = 1 ]; then exit_code=0; else exit_code=1; fi
 }
 
-process (){
+get_follow_log () {
+    local test_call_counter=0
+    local response=""
+    local counter=0
+    local retry=3
+    local polling_interval=10
+    local log_is_archived="false"
+    local current_position=0
+    local current_timestamp_query=""
+    local command=""
+
+    while [ "${log_is_archived}" = "false" ]; do
+        if [ -z "${TESTING_ENABLED}" ]; then
+            sleep "$polling_interval"
+            command="curl --silent -X GET -w \"\n%{http_code}\n\" 'https://app.bitrise.io/api/build/$build_slug/logs.json?is_include_log_chunks=true$current_timestamp_query' --header 'Accept: application/json' --header 'Authorization: $ACCESS_TOKEN'"
+            response=$(eval "${command}")
+        else
+            command="https://app.bitrise.io/api/build/[REDACTED]/logs.json?is_include_log_chunks=true$current_timestamp_query"
+            ((test_call_counter++))
+            response=$(< ./testdata/"$1_$test_call_counter".json)
+        fi
+
+        if [[ "$response" != *"<!DOCTYPE html>"* ]]; then
+            status=$(echo "$response" | tail -n1)
+            response=${response%$status} # subtract status code from response
+            log_is_archived=$(echo "$response" | jq ".is_archived")
+            current_timestamp_query=$(echo "$response" | jq ".timestamp")
+            current_timestamp_query=$(sed -e 's/^"//' -e 's/"$//' <<<"$current_timestamp_query")
+            current_timestamp_query="&timestamp="$current_timestamp_query
+            log_chunks=$(echo "$response" | jq "{chunks: [.log_chunks[]]}")
+            chunks=$(echo "$log_chunks" | jq ".chunks[].chunk")
+            positions=$(echo "$log_chunks" | jq ".chunks[].position")
+            current_position=$(echo "${positions[${#positions[@]}-1]}")
+
+            for i in "${chunks[@]}"; do
+                echo -e $i
+                [ "$DEBUG" == "true" ] && log "${command%%'--header'*}" "$i" "get_follow.log"
+            done    
+        else
+            if [[ $counter -lt $retry ]]; then
+                build_status=0
+                ((counter++))
+            else
+                echo "ERROR: Invalid response received from Bitrise API"
+                build_status="null" 
+            fi
+        fi
+    done
+}
+
+process () {
     local response="$1"
     local current_build_status_text=$(echo "$response" | jq ".data .status_text" | sed 's/"//g')
     if [ "$previous_build_status_text" != "$current_build_status_text" ]; then
@@ -202,7 +257,7 @@ build_status_message () {
     esac
 }
 
-get_log_info(){
+get_log_info () {
     local log_is_archived=false
     local counter=0
     local retry=4
@@ -229,19 +284,21 @@ get_log_info(){
     fi
 }
 
-get_logs(){
-    local url="$1"
-    local logs=$(curl --silent -X GET "$url")
-
+render_logs () {
     echo "================================================================================"
     echo "============================== Bitrise Logs Start =============================="
-    echo "$logs"
+    "$1"
     echo "================================================================================"
     echo "==============================  Bitrise Logs End  =============================="
-
 }
 
-log(){
+get_logs () {
+    local url="$1"
+    local logs=$(curl --silent -X GET "$url")
+    echo "$logs"
+}
+
+log () {
     local request="$1"
     local response="$2"
     local log_file="$3"
@@ -255,9 +312,16 @@ log(){
 # disables "use foo "$@" if function's $1 should mean script's $1."
 if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
     trigger_build
-    get_build_status
-    get_log_info
-    get_logs "$log_url"
-    build_status_message "$build_status"
+    if [ "$FOLLOW" == "true" ]; then
+        render_logs get_follow_log  
+        get_build_status
+        build_status_message "$build_status"
+    else
+        get_build_status
+        get_log_info
+        logs=`get_logs "$log_url"`
+        render_logs "$logs"
+        build_status_message "$build_status"
+    fi
     exit ${exit_code}
 fi

@@ -1,0 +1,21 @@
+{
+  "expiring_raw_log_url": null,
+  "generated_log_chunks_num": null,
+  "is_archived": false,
+  "log_chunks": [
+    {
+      "chunk": "+------------------------------------------------------------------------------+\n| (2) activate-ssh-key@4|\n+------------------------------------------------------------------------------+\n|",
+      "position": 3
+    },
+    {
+      "chunk": "\n\u001b[34;1mSwitching to workflow:\u001b[0m Lint-Workflow\n\n\u001b[36mINFO\u001b[0m[14:08:59] Step uses latest version -- Updating StepLib ... \n",
+      "position": 2
+    },
+    {
+      "chunk": "Agent version:\t1.13.1\nHostname:\tprd-atl-std-y-xcode-11-5-200722140356-XzYb2S74omzTAYeEH3vNFK.local\nStart time:\t2020-07-22T14:08:58Z\n$ bitrise \"run\" \"--config\" \"/var/folders/6q/ffa/T\n",
+      "position": 1
+    }
+  ],
+  "timestamp": "2020-07-25T21:54:10.736Z"
+}
+200

@@ -1,0 +1,109 @@
+
+[17:24:04] REQUEST: https://app.bitrise.io/api/build/[REDACTED]/logs.json?is_include_log_chunks=true
+[17:24:04] RESPONSE: "+------------------------------------------------------------------------------+
+| (2) activate-ssh-key@4|
++------------------------------------------------------------------------------+
+|"
+"
+\u001b[34;1mSwitching to workflow:\u001b[0m Lint-Workflow
+
+\u001b[36mINFO\u001b[0m[14:08:59] Step uses latest version -- Updating StepLib ... 
+"
+"Agent version:	1.13.1
+Hostname:	prd-atl-std-y-xcode-11-5-200722140356-XzYb2S74omzTAYeEH3vNFK.local
+Start time:	2020-07-22T14:08:58Z
+$ bitrise \"run\" \"--config\" \"/var/folders/6q/ffa/T
+"
+
+[17:24:04] REQUEST: https://app.bitrise.io/api/build/[REDACTED]/logs.json?is_include_log_chunks=true&timestamp=2020-07-25T21:54:10.736Z
+[17:24:04] RESPONSE: "\u001b[00;32m  Current Bundler [Bundler version 2.1.4] follows Gemfile [2.1.4]\u001b[0m
+|                                                                              |
++---+---------------------------------------------------------------+----------+
+| \u001b[32;1m✓\u001b[0m | \u001b[32;1mbitrise-step-install-bundler@1\u001b[0m                                | 5.43 sec |
++---+---------------------------------------------------------------+----------+
+
+                                          ▼
+
++------------------------------------------------------------------------------+
+| (5) cache-pull@2                                                             |
++------------------------------------------------------------------------------+
+| id: cache-pull                                                               |
+| version: 2.1.4                                                               |
+| collection: https://github.com/bitrise-io/bitrise-steplib.git                |
+| toolkit: go                                                                  |
+| time: 2020-07-22T14:09:39Z                                                   |
++------------------------------------------------------------------------------+
+|                                                                              |
+\u001b[34;1mConfig:
+\u001b[0m- CacheAPIURL: [REDACTED]
+- DebugMode: false
+- StackID: osx-xcode-11.5.x
+
+\u001b[34;1mDownloading remote cache archive\u001b[0m
+"
+"Next Step
+
+"
+"
+Other Step
+
+"
+"\u001b[34;1mconfig:
+\u001b[0m
+- RepositoryURL: ssh://git@gitlab.com/some-project.git
+- CloneIntoDir: /Users/vagrant/git
+- Commit: 
+- Tag: 
+- Branch: develop
+- BranchDest: 
+- PRID: 0
+- PRRepositoryURL: 
+- PRMergeBranch: 
+- ResetRepository: false
+- CloneDepth: 0
+- BuildURL: https://app.bitrise.io/build/[REDACTED]
+- BuildAPIToken: [REDACTED]
+- 
+"
+
+[17:24:05] REQUEST: https://app.bitrise.io/api/build/[REDACTED]/logs.json?is_include_log_chunks=true&timestamp=2020-07-25T21:55:10.736Z
+[17:24:05] RESPONSE: 
+
+[17:24:05] REQUEST: https://app.bitrise.io/api/build/[REDACTED]/logs.json?is_include_log_chunks=true&timestamp=2020-07-25T21:55:15.736Z
+[17:24:05] RESPONSE: "[14:12:03]: Sending anonymous analytics information
+[14:12:03]: Learn more at https://docs.fastlane.tools/#metrics
+[14:12:03]: No personal or sensitive data is sent.
+[14:12:03]: You can disable this by adding `opt_out_usage` at the top of your Fastfile
+[14:12:03]: \u001b[32m------------------------------\u001b[0m
+[14:12:03]: \u001b[32m--- Step: default_platform ---\u001b[0m
+[14:12:03]: \u001b[32m------------------------------\u001b[0m
+[14:12:03]: \u001b[32mDriving the lane 'ios lint' 🚀\u001b[0m
+[14:12:03]: \u001b[32m---------------------------------------\u001b[0m
+[14:12:03]: \u001b[32m--- Step: mv ../Mintfile ./Mintfile ---\u001b[0m
+[14:12:03]: \u001b[32m---------------------------------------\u001b[0m
+[14:12:03]: \u001b[36m$ mv ../Mintfile ./Mintfile\u001b[0m
+[14:12:03]: \u001b[32m----------------------------\u001b[0m
+[14:12:03]: \u001b[32m--- Step: mint bootstrap ---\u001b[0m
+[14:12:03]: \u001b[32m----------------------------\u001b[0m
+[14:12:03]: \u001b[36m$ mint bootstrap\u001b[0m
+[14:12:03]: ▸ \u001b[35m🌱 2 packages up to date\u001b[0m
+[14:12:03]: \u001b[32m---------------------------------------\u001b[0m
+[14:12:03]: \u001b[32m--- Step: mv ./Mintfile ../Mintfile ---\u001b[0m
+[14:12:03]: \u001b[32m---------------------------------------\u001b[0m
+[14:12:03]: \u001b[36m$ mv ./Mintfile ../Mintfile\u001b[0m
+[14:12:03]: \u001b[32m-------------------------------------------------------------\u001b[0m
+[14:12:03]: \u001b[32m--- Step: mint which swiftlint -m ../Mintfile | tr -d '
+' ---\u001b[0m
+[14:12:03]: \u001b[32m-------------------------------------------------------------\u001b[0m
+[14:12:03]: \u001b[36m$ mint which swiftlint -m ../Mintfile | tr -d '
+'\u001b[0m
+[14:12:03]: ▸ \u001b[35m/usr/local/lib/mint/packages/github.com_realm_SwiftLint/build/0.39.2/swiftlint\u001b[0m
+[14:12:03]: \u001b[32m-----------------------\u001b[0m
+[14:12:03]: \u001b[32m--- Step: swiftlint ---\u001b[0m
+[14:12:03]: \u001b[32m-----------------------\u001b[0m
+[14:12:03]: \u001b[36m$ /usr/local/lib/mint/packages/github.com_realm_SwiftLint/build/0.39.2/swiftlint lint --reporter html > fastlane/swiftlint.html\u001b[0m
+"
+"/Mintfile ../Mintfile 
+"
+"Update 
+"

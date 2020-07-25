@@ -1,0 +1,25 @@
+{
+  "expiring_raw_log_url": null,
+  "generated_log_chunks_num": null,
+  "is_archived": false,
+  "log_chunks": [
+    {
+      "chunk": "\u001b[00;32m  Current Bundler [Bundler version 2.1.4] follows Gemfile [2.1.4]\u001b[0m\n|                                                                              |\n+---+---------------------------------------------------------------+----------+\n| \u001b[32;1m✓\u001b[0m | \u001b[32;1mbitrise-step-install-bundler@1\u001b[0m                                | 5.43 sec |\n+---+---------------------------------------------------------------+----------+\n\n                                          ▼\n\n+------------------------------------------------------------------------------+\n| (5) cache-pull@2                                                             |\n+------------------------------------------------------------------------------+\n| id: cache-pull                                                               |\n| version: 2.1.4                                                               |\n| collection: https://github.com/bitrise-io/bitrise-steplib.git                |\n| toolkit: go                                                                  |\n| time: 2020-07-22T14:09:39Z                                                   |\n+------------------------------------------------------------------------------+\n|                                                                              |\n\u001b[34;1mConfig:\n\u001b[0m- CacheAPIURL: [REDACTED]\n- DebugMode: false\n- StackID: osx-xcode-11.5.x\n\n\u001b[34;1mDownloading remote cache archive\u001b[0m\n",
+      "position": 7
+    },
+    {
+      "chunk": "Next Step\n\n",
+      "position": 6
+    },
+    {
+      "chunk": "\nOther Step\n\n",
+      "position": 5
+    },
+    {
+      "chunk": "\u001b[34;1mconfig:\n\u001b[0m\n- RepositoryURL: ssh://git@gitlab.com/some-project.git\n- CloneIntoDir: /Users/vagrant/git\n- Commit: \n- Tag: \n- Branch: develop\n- BranchDest: \n- PRID: 0\n- PRRepositoryURL: \n- PRMergeBranch: \n- ResetRepository: false\n- CloneDepth: 0\n- BuildURL: https://app.bitrise.io/build/[REDACTED]\n- BuildAPIToken: [REDACTED]\n- \n",
+      "position": 4
+    }
+  ],
+  "timestamp": "2020-07-25T21:55:10.736Z"
+}
+200
