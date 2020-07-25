@@ -13,9 +13,10 @@ Usage: gitrise [options]
 [options]
   -w, --workflow      <string>    Bitrise Workflow
   -b, --branch        <string>    Git Branch
-  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
+  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2
   -a, --access-token  <string>    Bitrise access token
   -s, --slug          <string>    Bitrise project slug
+  -f, --follow                    Continously pulls log updates from the current Workflow
   -v, --version                   App version
   -d, --debug                     Debug mode enabled
   -h, --help                      Print this help text
