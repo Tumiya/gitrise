@@ -25,9 +25,26 @@ Usage: gitrise [options]
 
 Please see [here](https://api-docs.bitrise.io/#/) for Bitrise API Reference 
 
-## Tests
+## Contributing
+
+Bug reports and suggestions for improvement are always welcome! Pull requests are also accepted!
+
+If you are interested in adding functionality through a pull request, please open a new issue so that we have the chance to discuss it first.
+
+Before opening a PR, please make sure you have gone through the following steps:
+
+ * linted the scripts you have touched using [ShellCheck](https://github.com/koalaman/shellcheck)
+ * added tests for your changes
 
 To run the unit tests, use the following command in the project directory
 ```bash
 ./tests/test_runner
 ```
+
+After testing your changes, open a pull request to merge your branch into the **develop** branch.
+
+
+## LICENSE
+This software is available as open source under the terms of the MIT License. A copy of this license is included in the file [LICENSE](https://github.com/azohra/gitrise.sh/blob/feature/upgrade-shell-linter-in-pipeline/LICENSE).
+
+
