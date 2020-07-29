@@ -13,7 +13,7 @@ Usage: gitrise [options]
 [options]
   -w, --workflow      <string>    Bitrise Workflow
   -b, --branch        <string>    Git Branch
-  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
+  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2
   -a, --access-token  <string>    Bitrise access token
   -s, --slug          <string>    Bitrise project slug
   -v, --version                   App version
@@ -44,7 +44,5 @@ To run the unit tests, use the following command in the project directory
 After testing your changes, open a pull request to merge your branch into the **develop** branch.
 
 
-## LICENSE
-This software is available as open source under the terms of the MIT License. A copy of this license is included in the file [LICENSE](https://github.com/azohra/gitrise.sh/blob/feature/upgrade-shell-linter-in-pipeline/LICENSE).
-
-
+## License
+This software is available as open source under the terms of the MIT License. A copy of this license is included in the file [LICENSE](https://github.com/azohra/gitrise.sh/blob/develop/LICENSE).
