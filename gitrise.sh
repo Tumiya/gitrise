@@ -208,8 +208,14 @@ get_follow_log () {
             positions=$(echo "$log_chunks" | jq ".chunks[].position")
 
             for i in "${chunks[@]}"; do
-                echo -e "$i"
-                [ "$DEBUG" == "true" ] && log "${command%%'--header'*}" "$i" "get_follow.log"
+                x=$i
+                readarray -t var <<<"$x"
+                for j in "${var[@]}"; do
+                    temp="${j%\"}"
+                    temp="${temp#\"}"
+                    printf "$temp"
+                    [ "$DEBUG" == "true" ] && log "${command%%'--header'*}" "$i" "get_follow.log"
+                done
             done    
         else
             if [[ $counter -lt $retry ]]; then
