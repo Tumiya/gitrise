@@ -7,8 +7,7 @@
 
 source ./gitrise.sh -t -d
 
-testLogsUrl() {
-    local expected_url="https://bitrise_test_url.com"
+testFollowLog() {
     get_follow_log "log_responses/log_info_response"
     assertContains "get_follow.log file does not contain:\n" "$(<./gitrise_temp/get_follow.log)" "$(<./testdata/log_responses/test_result.txt)"
 }
