@@ -12,8 +12,4 @@ testFollowLog() {
     assertContains "get_follow.log file does not contain:\n" "$(<./gitrise_temp/get_follow.log)" "$(<./testdata/log_responses/test_result.txt)"
 }
 
-oneTimeTearDown(){
-    [ -d gitrise_temp ] && rm -r ./gitrise_temp
-}
-
 . ./tests/shunit2
