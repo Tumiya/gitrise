@@ -182,7 +182,6 @@ get_follow_log () {
     local retry=3
     local polling_interval=10
     local log_is_archived="false"
-    local current_position=0
     local current_timestamp_query=""
     local command=""
 
@@ -207,10 +206,9 @@ get_follow_log () {
             log_chunks=$(echo "$response" | jq "{chunks: [.log_chunks[]]}")
             chunks=$(echo "$log_chunks" | jq ".chunks[].chunk")
             positions=$(echo "$log_chunks" | jq ".chunks[].position")
-            current_position=$(echo "${positions[${#positions[@]}-1]}")
 
             for i in "${chunks[@]}"; do
-                echo -e $i
+                echo -e "$i"
                 [ "$DEBUG" == "true" ] && log "${command%%'--header'*}" "$i" "get_follow.log"
             done    
         else
@@ -319,7 +317,7 @@ if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
     else
         get_build_status
         get_log_info
-        logs=`get_logs "$log_url"`
+        logs=$(get_logs "$log_url")
         render_logs "$logs"
         build_status_message "$build_status"
     fi
