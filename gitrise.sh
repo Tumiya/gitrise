@@ -21,7 +21,7 @@ usage() {
     echo "[options]"
     echo "  -w, --workflow      <string>    Bitrise Workflow"
     echo "  -b, --branch        <string>    Git Branch"
-    echo "  -l, --tag           <string>    Git Tag"
+    echo "  -T, --tag           <string>    Git Tag"
     echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -s, --slug          <string>    Bitrise project slug"
@@ -47,7 +47,7 @@ while [ $# -gt 0 ]; do
         BRANCH="$2"
         shift;shift
     ;;
-    --tag)
+    -T|--tag)
         TAG="$2"
         shift;shift
     ;;
