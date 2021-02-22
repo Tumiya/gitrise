@@ -21,6 +21,7 @@ usage() {
     echo "[options]"
     echo "  -w, --workflow      <string>    Bitrise Workflow"
     echo "  -b, --branch        <string>    Git Branch"
+    echo "  -t, --tag           <string>    Git Tag"
     echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -s, --slug          <string>    Bitrise project slug"
@@ -43,6 +44,10 @@ while [ $# -gt 0 ]; do
     ;;
     -b|--branch)
         BRANCH="$2"
+        shift;shift
+    ;;
+    -t|--tag)
+        TAG="$2"
         shift;shift
     ;;
     -a|--access-token)
@@ -115,8 +120,8 @@ process_env_vars () {
 trigger_build () { 
     local response=""
     if [ -z "${TESTING_ENABLED}" ]; then
-        local environments=$(process_env_vars "$ENV_STRING")   
-        local payload="{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"branch\":\"$BRANCH\",\"workflow_id\":\"$WORKFLOW\",\"environments\":$environments \
+        local environments=$(process_env_vars "$ENV_STRING")
+        local payload="{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"branch\":\"$BRANCH\",\"tag\":\"$TAG\",\"workflow_id\":\"$WORKFLOW\",\"environments\":$environments \
         }}" 
         local command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
                 --data '$payload' \
