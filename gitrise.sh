@@ -21,12 +21,13 @@ usage() {
     echo "[options]"
     echo "  -w, --workflow      <string>    Bitrise Workflow"
     echo "  -b, --branch        <string>    Git Branch"
-    echo "  -t, --tag           <string>    Git Tag"
+    echo "  -l, --tag           <string>    Git Tag"
     echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -s, --slug          <string>    Bitrise project slug"
     echo "  -v, --version                   App version"
     echo "  -d, --debug                     Debug mode enabled"
+    echo "  -t, --test                      Enable test mode"
     echo "  -h, --help                      Print this help text"
 }
 
@@ -46,7 +47,7 @@ while [ $# -gt 0 ]; do
         BRANCH="$2"
         shift;shift
     ;;
-    -t|--tag)
+    --tag)
         TAG="$2"
         shift;shift
     ;;
