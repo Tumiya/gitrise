@@ -123,16 +123,37 @@ process_env_vars () {
     echo "[${result/%,}]"
 }
 
+prepare_build () {
+  if [ ! -z "${TAG}" ]; then
+    unset COMMIT
+    unset BRANCH
+  fi
+}
+
 trigger_build () { 
     local response=""
     if [ -z "${TESTING_ENABLED}" ]; then
         local environments=$(process_env_vars "$ENV_STRING")
-        local payload="{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"branch\":\"$BRANCH\",\"tag\":\"$TAG\",\"commit_hash\":\"$COMMIT\",\"workflow_id\":\"$WORKFLOW\",\"environments\":$environments \
-        }}" 
+        local payload="{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"workflow_id\":\"$WORKFLOW\",\"environments\":$environments \
+        }}"
+
+        if [ ! -z "${COMMIT}" ]; then
+          payload=$(echo $payload | jq  ".build_params +={\"commit_hash\": \"${COMMIT}\"}")
+        fi
+
+        if [ ! -z "${BRANCH}" ]; then
+          payload=$(echo $payload | jq  ".build_params +={\"branch\": \"${BRANCH}\"}")
+        fi
+
+        if [ ! -z "${TAG}" ]; then
+          payload=$(echo $payload | jq  ".build_params +={\"tag\": \"${TAG}\"}")
+        fi
+        payload=$(echo $payload | jq -c)
+
         local command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
                 --data '$payload' \
                 --header 'Accept: application/json' --header 'Authorization: $ACCESS_TOKEN'"
-        response=$(eval "${command}") 
+        response=$(eval "${command}")
     else
         response=$(<./testdata/"$1"_build_trigger_response.json)
     fi
@@ -265,6 +286,7 @@ log(){
 # shellcheck disable=SC2119
 # disables "use foo "$@" if function's $1 should mean script's $1."
 if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
+    prepare_build
     trigger_build
     get_build_status
     get_log_info
