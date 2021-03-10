@@ -87,8 +87,14 @@ while [ $# -gt 0 ]; do
     ;;
     esac
 done
+# Manage parameter priority
+if [ -n "${TAG}" ]; then
+  unset COMMIT
+  unset BRANCH
+fi
 
-prepare_build_params
+
+
 
 # Create temp directory if debugging mode enabled
 if [ "$DEBUG" == "true" ]; then  
@@ -125,14 +131,7 @@ process_env_vars () {
     echo "[${result/%,}]"
 }
 
-prepare_build_params () {
-  if [ -n "${TAG}" ]; then
-    unset COMMIT
-    unset BRANCH
-  fi
-}
-
-trigger_build () { 
+trigger_build () {
     local response=""
     if [ -z "${TESTING_ENABLED}" ]; then
         local environments=$(process_env_vars "$ENV_STRING")
