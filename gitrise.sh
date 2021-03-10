@@ -88,6 +88,8 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+prepare_build_params
+
 # Create temp directory if debugging mode enabled
 if [ "$DEBUG" == "true" ]; then  
     [ -d gitrise_temp ] && rm -r gitrise_temp 
@@ -123,8 +125,8 @@ process_env_vars () {
     echo "[${result/%,}]"
 }
 
-prepare_build () {
-  if [ ! -z "${TAG}" ]; then
+prepare_build_params () {
+  if [ -n "${TAG}" ]; then
     unset COMMIT
     unset BRANCH
   fi
@@ -137,18 +139,18 @@ trigger_build () {
         local payload="{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"workflow_id\":\"$WORKFLOW\",\"environments\":$environments \
         }}"
 
-        if [ ! -z "${COMMIT}" ]; then
-          payload=$(echo $payload | jq  ".build_params +={\"commit_hash\": \"${COMMIT}\"}")
+        if [ -n "${COMMIT}" ]; then
+          payload=$(echo "$payload" | jq  ".build_params +={\"commit_hash\": \"${COMMIT}\"}")
         fi
 
-        if [ ! -z "${BRANCH}" ]; then
-          payload=$(echo $payload | jq  ".build_params +={\"branch\": \"${BRANCH}\"}")
+        if [ -n "${BRANCH}" ]; then
+          payload=$(echo "$payload" | jq  ".build_params +={\"branch\": \"${BRANCH}\"}")
         fi
 
-        if [ ! -z "${TAG}" ]; then
-          payload=$(echo $payload | jq  ".build_params +={\"tag\": \"${TAG}\"}")
+        if [ -n "${TAG}" ]; then
+          payload=$(echo "$payload" | jq  ".build_params +={\"tag\": \"${TAG}\"}")
         fi
-        payload=$(echo $payload | jq -c)
+        payload=$(echo "$payload" | jq -c)
 
         local command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
                 --data '$payload' \
@@ -157,7 +159,7 @@ trigger_build () {
     else
         response=$(<./testdata/"$1"_build_trigger_response.json)
     fi
-    [ "$DEBUG" == "true" ] && log "${command%'--data'*}" "$response" "trigger_build.log"
+    [ "$DEBUG" == "true" ] && log "${command%'--data'*} --data $payload" "$response" "trigger_build.log"
     
     status=$(echo "$response" | jq ".status" | sed 's/"//g' )
     if [ "$status" != "ok" ]; then
@@ -286,7 +288,6 @@ log(){
 # shellcheck disable=SC2119
 # disables "use foo "$@" if function's $1 should mean script's $1."
 if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
-    prepare_build
     trigger_build
     get_build_status
     get_log_info

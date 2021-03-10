@@ -47,6 +47,49 @@ testBranchOption(){
     assertEquals "${expected_branch}" "${actual_branch}"
 }
 
+
+testCommitOption(){
+    local expected_commit="test_commit"
+    source ./gitrise.sh -t -c "test_commit"
+    local actual_commit="$COMMIT"
+    assertEquals "${expected_commit}" "${actual_commit}"
+}
+
+testTagOption(){
+    local expected_tag="test_tag"
+    source ./gitrise.sh -t -T "test_tag"
+    local actual_tag="$TAG"
+    assertEquals "${expected_tag}" "${actual_tag}"
+
+    unset TAG
+    local expected_branch=""
+    source ./gitrise.sh -t -b "test_branch" -T "test_tag"
+    local actual_tag="$TAG"
+    local actual_branch="$BRANCH"
+    assertEquals "${expected_tag}" "${actual_tag}"
+    assertEquals "${expected_branch}" "${actual_branch}"
+}
+
+testTagBranchOption(){
+    local expected_tag="test_tag"
+    source ./gitrise.sh -t -b "test_branch" -T "test_tag"
+    local actual_tag="$TAG"
+    local actual_branch="$BRANCH"
+    assertEquals "${expected_tag}" "${actual_tag}"
+    assertNull "${actual_branch}"
+}
+
+testTagBranchCommitOption(){
+    local expected_tag="test_tag"
+    source ./gitrise.sh -t -b "test_branch" -T "test_tag" -c "test_commit"
+    local actual_tag="$TAG"
+    local actual_branch="$BRANCH"
+    local actual_commit="$COMMIT"
+    assertEquals "${expected_tag}" "${actual_tag}"
+    assertNull "${actual_branch}"
+    assertNull "${actual_commit}"
+}
+
 testWrongUsage(){
     local expected=$(printf "Invalid option '-w,'\n%s" "$(usage)")
     local result=$(./gitrise.sh -t -w, test_workflow)
