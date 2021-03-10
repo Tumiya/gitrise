@@ -149,7 +149,7 @@ trigger_build () {
         if [ -n "${TAG}" ]; then
           payload=$(echo "$payload" | jq  ".build_params +={\"tag\": \"${TAG}\"}")
         fi
-        payload=$(echo "$payload" | jq -c)
+        payload=$(echo "$payload" | jq . -c)
 
         local command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
                 --data '$payload' \
