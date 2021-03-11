@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # shellcheck disable=SC1091,SC2155,SC2154,SC2034
 # Not following: (error message here)
@@ -6,7 +6,7 @@
 # var is referenced but not assigned.
 # var appears unused
 
-source ./gitrise.sh -t
+source ./gitrise.sh -T
 
 testFetchingBuildSlug() {
     local expected_slug="546yw9284a8g1205"

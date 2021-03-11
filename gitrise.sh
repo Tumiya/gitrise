@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=SC2155
 # disbales "Declare and assign separately to avoid masking return values."
 # shellcheck disable=SC2120
@@ -19,14 +19,17 @@ usage() {
     echo "Usage: gitrise [options]"
     echo 
     echo "[options]"
-    echo "  -w, --workflow      <string>    Bitrise Workflow"
-    echo "  -b, --branch        <string>    Git Branch"
-    echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -a, --access-token  <string>    Bitrise access token"
-    echo "  -s, --slug          <string>    Bitrise project slug"
-    echo "  -v, --version                   App version"
+    echo "  -b, --branch        <string>    Git branch"
+    echo "  -c, --commit        <string>    Git commit hash "
     echo "  -d, --debug                     Debug mode enabled"
+    echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -h, --help                      Print this help text"
+    echo "  -s, --slug          <string>    Bitrise project slug"
+    echo "  -T, --test                      Test mode enabled"
+    echo "  -t, --tag           <string>    Git tag"
+    echo "  -v, --version                   App version"
+    echo "  -w, --workflow      <string>    Bitrise workflow"
 }
 
 # parsing space separated options
@@ -39,6 +42,14 @@ while [ $# -gt 0 ]; do
     ;;
     -w|--workflow)
         WORKFLOW="$2"
+        shift;shift
+    ;;
+    -c|--commit)
+        COMMIT="$2"
+        shift;shift
+    ;;
+    -t|--tag)
+        TAG="$2"
         shift;shift
     ;;
     -b|--branch)
@@ -61,7 +72,7 @@ while [ $# -gt 0 ]; do
         usage
         exit 0 
     ;;
-    -t|--test)
+    -T|--test)
         TESTING_ENABLED="true"
         shift
     ;;
@@ -83,9 +94,28 @@ if [ "$DEBUG" == "true" ]; then
     mkdir -p gitrise_temp
 fi
 
+validate_input() {
+    if [ -z "$WORKFLOW" ] || [ -z "$ACCESS_TOKEN" ] || [ -z "$PROJECT_SLUG" ]; then
+        printf "\e[31m ERROR: Missing option(s). All these options must be passed: --workflow,--slug,--access-token \e[0m\n"
+        exit 1
+    fi
+
+    local count=0
+    [[ -n "$TAG" ]] &&  ((count++))
+    [[ -n "$COMMIT" ]] &&  ((count++))
+    [[ -n "$BRANCH" ]] &&  ((count++))
+
+    if [[  $count -gt 1 ]]; then
+        printf "\n\e[33m Warning: Too many checkout options passed. Only one of these is needed: --commit, --tag, --branch \e[0m\n"
+    elif [[  $count == 0 ]]; then
+        printf "\e[31m ERROR: Invalid checkout option. Pass one of these options: --commit, --tag, --branch\e[0m\n"
+        exit 1
+    fi
+}
+
 # map environment variables to objects Bitrise will accept. 
 # ENV_STRING is passed as argument
-process_env_vars () {
+process_env_vars() {
     local env_string=""
     local result=""
     input_length=$(grep -c . <<< "$1")
@@ -112,14 +142,29 @@ process_env_vars () {
     echo "[${result/%,}]"
 }
 
-trigger_build () { 
+generate_build_payload() {
+    local environments=$(process_env_vars "$ENV_STRING")   
+    cat << EOF
+{
+  "build_params": {
+    "branch": "$BRANCH",
+    "commit_hash": "$COMMIT",
+    "tag": "$TAG",
+    "workflow_id" : "$WORKFLOW",
+    "environments": $environments
+  },
+    "hook_info": {
+      "type": "bitrise"
+  }
+}
+EOF
+}
+
+trigger_build() {
     local response=""
-    if [ -z "${TESTING_ENABLED}" ]; then
-        local environments=$(process_env_vars "$ENV_STRING")   
-        local payload="{\"hook_info\":{\"type\":\"bitrise\"},\"build_params\":{\"branch\":\"$BRANCH\",\"workflow_id\":\"$WORKFLOW\",\"environments\":$environments \
-        }}" 
+    if [ -z "${TESTING_ENABLED}" ]; then 
         local command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
-                --data '$payload' \
+                --data '$(generate_build_payload)' \
                 --header 'Accept: application/json' --header 'Authorization: $ACCESS_TOKEN'"
         response=$(eval "${command}") 
     else
@@ -139,7 +184,7 @@ trigger_build () {
     printf "\nHold on... We're about to liftoff! 🚀\n \nBuild URL: %s\n" "${build_url}"
 }
 
-get_build_status () {
+get_build_status() {
     local response=""
     local counter=0
     local retry=3
@@ -170,7 +215,7 @@ get_build_status () {
     if [ "$build_status" = 1 ]; then exit_code=0; else exit_code=1; fi
 }
 
-process (){
+process(){
     local response="$1"
     local current_build_status_text=$(echo "$response" | jq ".data .status_text" | sed 's/"//g')
     if [ "$previous_build_status_text" != "$current_build_status_text" ]; then
@@ -180,7 +225,7 @@ process (){
     build_status=$(echo "$response" | jq ".data .status")
 }
 
-build_status_message () {
+build_status_message() {
     local status="$1"
     case "$status" in
         "0")
@@ -254,6 +299,7 @@ log(){
 # shellcheck disable=SC2119
 # disables "use foo "$@" if function's $1 should mean script's $1."
 if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
+    validate_input
     trigger_build
     get_build_status
     get_log_info
