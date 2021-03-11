@@ -1,11 +1,11 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 # shellcheck disable=SC1091,SC2155,SC2154
 # Not following: (error message here)
 # Declare and assign separately to avoid masking return values.
 # var is referenced but not assigned.
 
-source ./gitrise.sh -t
+source ./gitrise.sh -T
 
 testLogNotArchived(){
     local expected_message="LOGS WERE NOT AVAILABLE - go to https://test.io/build/546yw9284a8g1205 to see log."

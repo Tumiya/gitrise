@@ -1,8 +1,8 @@
-#! /bin/bash 
+#!/usr/bin/env bash 
 # shellcheck disable=SC1091,SC2155,SC2154
 # Not following: (error message here)
 
-source ./gitrise.sh -t -d
+source ./gitrise.sh -T -d
 
 testDebugMode(){
     assertTrue "DEBUG is not set to 'true'" "$DEBUG"

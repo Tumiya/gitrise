@@ -1,9 +1,9 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 # shellcheck disable=SC1091,SC2155
 # Not following: (error message here)
 # Declare and assign separately to avoid masking return values.
-source ./gitrise.sh -t
+source ./gitrise.sh -T
 
 testEnvVars() {
     local expected="[{\"mapped_to\":\"CODE_COVERAGE\",\"value\":\"true\",\"is_expand\":true},{\"mapped_to\":\"ENVIRONMENT\",\"value\":\"UAT\",\"is_expand\":true}]"
@@ -42,14 +42,24 @@ testTestingModeOption() {
 
 testBranchOption(){
     local expected_branch="test_branch"
-    source ./gitrise.sh -t -b test_branch
+    source ./gitrise.sh -b test_branch
     local actual_branch="$BRANCH"
     assertEquals "${expected_branch}" "${actual_branch}"
 }
 
+testTagAndCommitOptions() {
+    local expected_tag="test_tag"
+    local expected_commit="test_commit"
+    source ./gitrise.sh -b test_branch -t test_tag -c test_commit
+    local actual_tag="$TAG"
+    local actual_commit="$COMMIT"
+    assertEquals "${expected_tag}" "${actual_tag}"
+    assertEquals "${expected_commit}" "${actual_commit}"
+}
+
 testWrongUsage(){
     local expected=$(printf "Invalid option '-w,'\n%s" "$(usage)")
-    local result=$(./gitrise.sh -t -w, test_workflow)
+    local result=$(./gitrise.sh -w, test_workflow)
     assertEquals "$expected" "$result"
 }
  
