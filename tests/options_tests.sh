@@ -55,6 +55,12 @@ testCommitOption(){
     assertEquals "${expected_commit}" "${actual_commit}"
 }
 
+testCommitMessageOption(){
+    local expected_commit="test_commit"
+    source ./gitrise.sh -t -m "test_commit"
+    local actual_commit="$COMMIT_MESSAGE"
+    assertEquals "${expected_commit}" "${actual_commit}"
+}
 testTagOption(){
     local expected_tag="test_tag"
     source ./gitrise.sh -t -T "test_tag"

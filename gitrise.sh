@@ -17,12 +17,13 @@ log_url=""
 usage() {
     echo ""
     echo "Usage: gitrise [options]"
-    echo 
+    echo
     echo "[options]"
     echo "  -w, --workflow      <string>    Bitrise Workflow"
     echo "  -b, --branch        <string>    Git Branch"
     echo "  -T, --tag           <string>    Git Tag"
     echo "  -c, --commit        <string>    Git commit hash"
+    echo "  -m, --message       <string>    Git commit message"
     echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -s, --slug          <string>    Bitrise project slug"
@@ -56,6 +57,10 @@ while [ $# -gt 0 ]; do
         COMMIT="$2"
         shift;shift
     ;;
+    -m|--message)
+        COMMIT_MESSAGE="$2"
+        shift;shift
+    ;;
     -a|--access-token)
         ACCESS_TOKEN="$2"
         shift;shift
@@ -70,7 +75,7 @@ while [ $# -gt 0 ]; do
     ;;
     -h|--help)
         usage
-        exit 0 
+        exit 0
     ;;
     -t|--test)
         TESTING_ENABLED="true"
@@ -80,7 +85,7 @@ while [ $# -gt 0 ]; do
         DEBUG="true"
         shift
     ;;
-    *) 
+    *)
         echo "Invalid option '$1'"
         usage
         exit 1
@@ -97,12 +102,12 @@ fi
 
 
 # Create temp directory if debugging mode enabled
-if [ "$DEBUG" == "true" ]; then  
-    [ -d gitrise_temp ] && rm -r gitrise_temp 
+if [ "$DEBUG" == "true" ]; then
+    [ -d gitrise_temp ] && rm -r gitrise_temp
     mkdir -p gitrise_temp
 fi
 
-# map environment variables to objects Bitrise will accept. 
+# map environment variables to objects Bitrise will accept.
 # ENV_STRING is passed as argument
 process_env_vars () {
     local env_string=""
@@ -142,6 +147,10 @@ trigger_build () {
           payload=$(echo "$payload" | jq  ".build_params +={\"commit_hash\": \"${COMMIT}\"}")
         fi
 
+        if [ -n "${COMMIT_MESSAGE}" ]; then
+          payload=$(echo "$payload" | jq  ".build_params +={\"commit_message\": \"${COMMIT_MESSAGE}\"}")
+        fi
+
         if [ -n "${BRANCH}" ]; then
           payload=$(echo "$payload" | jq  ".build_params +={\"branch\": \"${BRANCH}\"}")
         fi
@@ -159,13 +168,13 @@ trigger_build () {
         response=$(<./testdata/"$1"_build_trigger_response.json)
     fi
     [ "$DEBUG" == "true" ] && log "${command%'--data'*} --data $payload" "$response" "trigger_build.log"
-    
+
     status=$(echo "$response" | jq ".status" | sed 's/"//g' )
     if [ "$status" != "ok" ]; then
         msg=$(echo "$response" | jq ".message" | sed 's/"//g')
         printf "%s" "ERROR: $msg"
         exit 1
-    else 
+    else
         build_url=$(echo "$response" | jq ".build_url" | sed 's/"//g')
         build_slug=$(echo "$response" | jq ".build_slug" | sed 's/"//g')
     fi
@@ -189,14 +198,14 @@ get_build_status () {
         [ "$DEBUG" == "true" ] && log "${command%%'--header'*}" "$response" "get_build_status.log"
 
         if [[ "$response" != *"<!DOCTYPE html>"* ]]; then
-            process "${response%'status_code'*}"    
+            process "${response%'status_code'*}"
         else
             if [[ $counter -lt $retry ]]; then
                 build_status=0
                 ((counter++))
             else
                 echo "ERROR: Invalid response received from Bitrise API"
-                build_status="null" 
+                build_status="null"
             fi
         fi
     done
@@ -283,7 +292,7 @@ log(){
     printf "%b" "\n[$(TZ="EST6EDT" date +'%T')] REQUEST: ${secured_request}\n[$(TZ="EST6EDT" date +'%T')] RESPONSE: $response\n" >> ./gitrise_temp/"$log_file"
 }
 
-# No function execution when the script is sourced 
+# No function execution when the script is sourced
 # shellcheck disable=SC2119
 # disables "use foo "$@" if function's $1 should mean script's $1."
 if [ "$0" = "${BASH_SOURCE[0]}" ] && [ -z "${TESTING_ENABLED}" ]; then
