@@ -1,29 +1,36 @@
 # Gitrise 
+[![Release](https://img.shields.io/github/release/azohra/gitrise.sh.svg)](https://github.com/azohra/gitrise.sh/releases)
+[![Mainline Status](https://github.com/azohra/gitrise.sh/workflows/CI-workflow/badge.svg)](https://github.com/azohra/gitrise.sh/actions?query=branch%3Adevelop)
 
-A Bitrise trigger in pure `bash` 🎉!
+A Bitrise trigger in pure `bash`!
 
+![](docs/images/gitrise.png)
 
 ## Usage
-1. ```chmod +x gitrise.sh```  
-2. ```gitrise.sh [options]```  
+To use Gitrise, all you need is the `gitrise.sh` script. There are four arguments that you have to pass to the script for a successful run:  
+ 
+ ```gitrise.sh -a token -s project_slug -w workflow [-b branch|-t tag|-c commit]```  
+
+Gitrise supports all the building capabilities of Bitrise including commit, tag, branch. In the usage guide above, these options are shown with `[-b branch|-t tag|-c commit]`. For building purposes, however, you may only pass one of these building options as Bitrise will only use one of them in this priority order: commit, tag, branch. This means, if you pass both a commit and a tag, Bitrise will use the commit for building. 
+
+The complete Gitrise usage guide can be found below:
 
 ```
-Usage: gitrise [options]
+Usage: gitrise.sh [-d] [-e] [-h] [-T] [-v]  -a token -s project_slug -w workflow [-b branch|-t tag|-c commit] 
 
 [options]
-  -w, --workflow      <string>    Bitrise Workflow
-  -b, --branch        <string>    Git Branch
-  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2
   -a, --access-token  <string>    Bitrise access token
-  -s, --slug          <string>    Bitrise project slug
-  -v, --version                   App version
+  -b, --branch        <string>    Git branch
+  -c, --commit        <string>    Git commit hash
   -d, --debug                     Debug mode enabled
+  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2
   -h, --help                      Print this help text
+  -s, --slug          <string>    Bitrise project slug
+  -T, --test                      Test mode enabled
+  -t, --tag           <string>    Git tag
+  -v, --version                   App version
+  -w, --workflow      <string>    Bitrise workflow
 ```
-
-## API Reference
-
-Please see [here](https://api-docs.bitrise.io/#/) for Bitrise API Reference 
 
 ## Contributing
 

@@ -16,7 +16,7 @@ log_url=""
 
 usage() {
     echo ""
-    echo "Usage: gitrise [options]"
+    echo "Usage: gitrise.sh [options]"
     echo 
     echo "[options]"
     echo "  -a, --access-token  <string>    Bitrise access token"
@@ -96,7 +96,8 @@ fi
 
 validate_input() {
     if [ -z "$WORKFLOW" ] || [ -z "$ACCESS_TOKEN" ] || [ -z "$PROJECT_SLUG" ]; then
-        printf "\e[31m ERROR: Missing option(s). All these options must be passed: --workflow,--slug,--access-token \e[0m\n"
+        printf "\e[31m ERROR: Missing arguments(s). All these args must be passed: --workflow,--slug,--access-token \e[0m\n"
+        usage
         exit 1
     fi
 
@@ -106,9 +107,10 @@ validate_input() {
     [[ -n "$BRANCH" ]] &&  ((count++))
 
     if [[  $count -gt 1 ]]; then
-        printf "\n\e[33m Warning: Too many checkout options passed. Only one of these is needed: --commit, --tag, --branch \e[0m\n"
+        printf "\n\e[33m Warning: Too many building arguments passed. Only one of these is needed: --commit, --tag, --branch \e[0m\n"
     elif [[  $count == 0 ]]; then
-        printf "\e[31m ERROR: Invalid checkout option. Pass one of these options: --commit, --tag, --branch\e[0m\n"
+        printf "\e[31m ERROR: Missing build argument. Pass one of these: --commit, --tag, --branch\e[0m\n"
+        usage
         exit 1
     fi
 }
