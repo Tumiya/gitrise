@@ -11,14 +11,24 @@ To use Gitrise, all you need is the `gitrise.sh` script. There are four argument
  
  ```gitrise.sh -a token -s project_slug -w workflow [-b branch|-t tag|-c commit]```  
 
-Gitrise supports all the building capabilities of Bitrise including commit, tag, branch. In the usage guide above, these options are shown with `[-b branch|-t tag|-c commit]`. For building purposes, however, you may only pass one of these building options as Bitrise will only use one of them in this priority order: commit, tag, branch. This means, if you pass both a commit and a tag, Bitrise will use the commit for building. 
+Gitrise supports all the building capabilities of Bitrise including commit, tag, and branch. In the usage guide above, these options are shown with `[-b branch|-t tag|-c commit]`. For building purposes, however, you may only pass one of these building options as Bitrise will only use one of them in this priority order: commit, tag, branch. Some of the common use cases are given below:
+
+Trigger a build for a specific branch:
+
+```
+gitrise.sh -a token -s project_slug -w workflow -b branch
+```
+
+Trigger a build for a specific tag:
+```
+gitrise.sh -a token -s project_slug -w workflow -t tag
+```
 
 The complete Gitrise usage guide can be found below:
 
 ```
 Usage: gitrise.sh [-d] [-e] [-h] [-T] [-v]  -a token -s project_slug -w workflow [-b branch|-t tag|-c commit] 
 
-[options]
   -a, --access-token  <string>    Bitrise access token
   -b, --branch        <string>    Git branch
   -c, --commit        <string>    Git commit hash
