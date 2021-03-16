@@ -16,9 +16,8 @@ log_url=""
 
 usage() {
     echo ""
-    echo "Usage: gitrise.sh [options]"
+    echo "Usage: gitrise.sh [-d] [-e] [-h] [-T] [-v]  -a token -s project_slug -w workflow [-b branch|-t tag|-c commit]"
     echo 
-    echo "[options]"
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -b, --branch        <string>    Git branch"
     echo "  -c, --commit        <string>    Git commit hash "
@@ -30,6 +29,7 @@ usage() {
     echo "  -t, --tag           <string>    Git tag"
     echo "  -v, --version                   App version"
     echo "  -w, --workflow      <string>    Bitrise workflow"
+    echo 
 }
 
 # parsing space separated options
