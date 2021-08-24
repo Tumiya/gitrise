@@ -62,5 +62,25 @@ testWrongUsage(){
     local result=$(./gitrise.sh -w, test_workflow)
     assertEquals "$expected" "$result"
 }
+
+testStreamOption(){
+    local expected="true"
+    source ./gitrise.sh --stream -b test_branch -w workflow
+    local actual="$STREAM"
+    assertEquals "$expected" "$actual"
+}
  
+testDefaultPollingIntervalOption(){
+    local expected=30
+    source ./gitrise.sh -b test_branch -w workflow
+    local actual="$STATUS_POLLING_INTERVAL"
+    assertEquals "$expected" "$actual"
+}
+
+testSettingPollingInterval(){
+    local expected=20
+    source ./gitrise.sh -b test_branch -w workflow -p 20
+    local actual="$STATUS_POLLING_INTERVAL"
+    assertEquals "$expected" "$actual"
+}
 . ./tests/shunit2

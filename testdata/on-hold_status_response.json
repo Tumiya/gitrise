@@ -1,0 +1,29 @@
+{
+    "data":{
+        "triggered_at":"2021-09-09T16:17:07Z",
+        "started_on_worker_at":null,
+        "environment_prepare_finished_at":null,
+        "finished_at":null,
+        "slug":"xxxxxxxxxxxxx",
+        "status":0,
+        "status_text":"on-hold",
+        "abort_reason":null,
+        "is_on_hold":false,
+        "is_processed":false,
+        "branch":"test-script",
+        "build_number":402,
+        "commit_hash":"",
+        "commit_message":null,
+        "tag":"",
+        "triggered_workflow":"build_app",
+        "triggered_by":null,
+        "machine_type_id":"elite",
+        "stack_identifier":"osx-xcode-12.1.x",
+        "original_build_params":{"branch":"test-script","commit_hash":"","tag":"","workflow_id":"build_app","environments":[]},
+        "pull_request_id":0,
+        "pull_request_target_branch":null,
+        "pull_request_view_url":null,
+        "commit_view_url":null,
+        "credit_cost":null
+    }
+}

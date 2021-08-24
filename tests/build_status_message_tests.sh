@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 # shellcheck disable=SC1091,SC2155
 # Not following: (error message here)
