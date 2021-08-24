@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 # This script runs all the test files that can be found at TEST_DIRECTORY path. 
 # Note: test files should be named *tests.sh 

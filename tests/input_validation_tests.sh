@@ -46,4 +46,15 @@ testPassingAllCheckoutOptions() {
     assertContains "Output message does not match." "${actual_message}" "${expected_message}"
 }
 
+testTooShortPollingInterval() {
+    local expected_message="ERROR: polling interval is too short. The minimum acceptable value is 10, but received 7."
+    local actual_message=$(./gitrise.sh -s "test-slug" -a "test-token" -w "test-workflow" -b "test-branch" -p 7)
+    assertContains "Output message does not match." "${actual_message}" "${expected_message}"
+}
+
+testAcceptablePollingInterval() {
+    local not_expected_message="ERROR: polling interval is too short. The minimum acceptable value is 10, but received 10."
+    local actual_message=$(./gitrise.sh -s "test-slug" -a "test-token" -w "test-workflow" -b "test-branch" -p 10)
+    assertNotContains "Output message does not match." "${actual_message}" "${not_expected_message}"
+}
 . ./tests/shunit2
