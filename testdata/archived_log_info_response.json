@@ -1,7 +1,4 @@
 {
-    "expiring_raw_log_url":"https://bitrise_test_url.com",
-    "generated_log_chunks_num":13,
-    "is_archived":true,
     "log_chunks":
     [
         {
@@ -39,5 +36,8 @@
             "position":14
             }
     ],
-    "timestamp":null
+    "next_before_timestamp":"2021-09-10T15:27:15.345Z",
+    "next_after_timestamp":"2021-09-10T15:27:31.178Z",
+    "is_archived":true,
+    "expiring_raw_log_url":"https://bitrise_test_url.com"
 }

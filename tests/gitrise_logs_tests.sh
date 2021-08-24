@@ -21,7 +21,7 @@ testLogFileCreation(){
 
 testLogsContent(){
     local command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/546yw9284a8g1205 --header 'Authorization: $ACCESS_TOKEN'"
-    log "${command%'--header'*}" "$(<./testdata/build_status_response.json)" "test.log"
+    log "${command%'--header'*}" "$(<./testdata/error_status_response.json)" "test.log"
     assertContains "test.log file does not contain:\n" "$(<./gitrise_temp/test.log)" "REQUEST: curl --silent -X GET https://api.bitrise.io/v0.1/apps/[REDACTED]/546yw9284a8g1205"
 }
 
