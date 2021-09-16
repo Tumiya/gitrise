@@ -24,7 +24,7 @@ testLogsUrl() {
 testNotStreamingForOnHoldBuild() {
     local expected_message="Build on-hold"
     local not_expected_message="jq: error (at <stdin>:1): Cannot iterate over null (null)"
-    local actual_message=$(process_build "on-hold_status_response.json"; build_status=1)
+    local actual_message=$(process_build "on-hold_status_response.json")
     assertContains "Message did not contain the expected content:" "$actual_message" "$expected_message"
     assertNotContains "Logs contained the unexpected content:" "$actual_message" "$not_expected_message" 
 }
