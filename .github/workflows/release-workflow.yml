@@ -17,5 +17,5 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: v0.8.0
         commit: master
-        name: Gitrise streams Bitrise logs
+        name: Gitrise v0.8.0
         bodyFile: ./docs/release_notes/v0.8.0.md
