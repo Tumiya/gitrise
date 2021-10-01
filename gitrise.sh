@@ -18,7 +18,7 @@ log_url=""
 
 function usage() {
     echo ""
-    echo "Usage: gitrise.sh [-d] [-e] [-h] [-T] [-v]  -a token -s project_slug -w workflow [-b branch|-t tag|-c commit]"
+    echo "Usage: gitrise.sh [-d] [-e] [-h] [-T] [-v]  -a token -s project_slug -w workflow [-b branch|-t tag|-c commit] [-D directory]"
     echo
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -b, --branch        <string>    Git branch"
