@@ -50,6 +50,7 @@ Usage: gitrise.sh [-d] [-e] [-h] [-T] [-v]  -a token -s project_slug -w workflow
   -b, --branch        <string>    Git branch
   -c, --commit        <string>    Git commit hash
   -d, --debug                     Debug mode enabled
+  -D, --download      <string>    Download artifacts to specified directory" 
   -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2
   -h, --help                      Print this help text
   -p, --poll           <string>   Polling interval (in seconds) to check the build status." 
