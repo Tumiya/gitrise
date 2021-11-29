@@ -317,8 +317,8 @@ function get_build_logs() {
 download_artifacts() {
   if [ "$DOWNLOAD_ARTIFACTS" = "true" ]; then
     OUTPUT_DIR=${DOWNLOAD_DIR:-'./'}
-    # Ensute OUTPUT_DIR exist
-    mkdir -p $OUTPUT_DIR
+    # Ensure directory OUTPUT_DIR exist
+    mkdir -p "$OUTPUT_DIR"
     echo "downloading artifacts to $OUTPUT_DIR"
     # Get artifacts slug
     local command="curl --silent -X GET https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds/$build_slug/artifacts \
