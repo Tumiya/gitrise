@@ -14,6 +14,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Lint
         uses: azohra/shell-linter@latest
+        with:
+          exclude-paths: "tests/shunit2,testdata/html_response,LICENSE"
  
   unit_tests:
     runs-on: ubuntu-latest
