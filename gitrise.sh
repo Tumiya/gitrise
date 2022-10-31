@@ -24,7 +24,7 @@ function usage() {
     echo "  -b, --branch        <string>    Git branch"
     echo "  -c, --commit        <string>    Git commit hash "
     echo "  -d, --debug                     Debug mode enabled"
-    echo "  -D, --download      <string>    Download artifacts to specified directory"
+    echo "  -o, --output      <string>    Download artifacts to specified directory"
     echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -h, --help                      Print this help text"
     echo "  -p, --poll           <string>   Polling interval (in seconds) to get the build status."
@@ -85,7 +85,7 @@ while [ $# -gt 0 ]; do
         DEBUG="true"
         shift
     ;;
-    -D | --download)
+    -o | --output)
         DOWNLOAD_ARTIFACTS="true"
         DOWNLOAD_DIR="$2"
         shift;shift
