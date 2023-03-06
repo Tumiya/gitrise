@@ -22,7 +22,8 @@ function usage() {
     echo 
     echo "  -a, --access-token  <string>    Bitrise access token"
     echo "  -b, --branch        <string>    Git branch"
-    echo "  -c, --commit        <string>    Git commit hash "
+    echo "  -c, --commit        <string>    Git commit hash"
+    echo "  -m, --message       <string>    Git commit message"
     echo "  -d, --debug                     Debug mode enabled"
     echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
     echo "  -h, --help                      Print this help text"
@@ -50,6 +51,10 @@ while [ $# -gt 0 ]; do
     ;;
     -c|--commit)
         COMMIT="$2"
+        shift;shift
+    ;;
+        -m|--message)
+        MESSAGE="$2"
         shift;shift
     ;;
     -t|--tag)
@@ -118,9 +123,7 @@ function validate_input() {
     [[ -n "$COMMIT" ]] &&  ((count++))
     [[ -n "$BRANCH" ]] &&  ((count++))
 
-    if [[  $count -gt 1 ]]; then
-        printf "\n\e[33m Warning: Too many building arguments passed. Only one of these is needed: --commit, --tag, --branch \e[0m\n"
-    elif [[  $count == 0 ]]; then
+    if [[  $count == 0 ]]; then
         printf "\e[31m ERROR: Missing build argument. Pass one of these: --commit, --tag, --branch\e[0m\n"
         usage
         exit 1
@@ -168,6 +171,7 @@ function generate_build_payload() {
   "build_params": {
     "branch": "$BRANCH",
     "commit_hash": "$COMMIT",
+    "commit_message": "$MESSAGE",
     "tag": "$TAG",
     "workflow_id" : "$WORKFLOW",
     "environments": $environments
