@@ -20,20 +20,26 @@ function usage() {
     echo ""
     echo "Usage: gitrise.sh [-d] [-e] [-h] [-T] [-v]  -a token -s project_slug -w workflow [-b branch|-t tag|-c commit]"
     echo 
-    echo "  -a, --access-token  <string>    Bitrise access token"
-    echo "  -b, --branch        <string>    Git branch"
-    echo "  -c, --commit        <string>    Git commit hash"
-    echo "  -m, --message       <string>    Git commit message"
-    echo "  -d, --debug                     Debug mode enabled"
-    echo "  -e, --env           <string>    List of environment variables in the form of key1:value1,key2:value2"
-    echo "  -h, --help                      Print this help text"
-    echo "  -p, --poll           <string>   Polling interval (in seconds) to get the build status."
-    echo "      --stream                    Stream build logs"
-    echo "  -s, --slug          <string>    Bitrise project slug"
-    echo "  -T, --test                      Test mode enabled"
-    echo "  -t, --tag           <string>    Git tag"
-    echo "  -v, --version                   App version"
-    echo "  -w, --workflow      <string>    Bitrise workflow"
+    echo "  -a, --access-token                   <string>   Bitrise access token"
+    echo "  -b, --branch                         <string>   Git branch"
+    echo "  -bd, --branch-dest                   <string>   Git destination branch"
+    echo "  -c, --commit                         <string>   Git commit hash"
+    echo "  -m, --message                        <string>   Git commit message"
+    echo "  -d, --debug                                     Debug mode enabled"
+    echo "  -e, --env                            <string>   List of environment variables in the form of key1:value1,key2:value2"
+    echo "  -h, --help                                      Print this help text"
+    echo "  -prid, --pull-request-id             <string>   ID of the pull request."
+    echo "  -pra, --pull-request-author          <string>   Author of the pull request"
+    echo "  -prhb, --pull-request-head-branch    <string>   Head branch of the pull request (feature)"
+    echo "  -prmb, --pull-request-merge-branch   <string>   Merge branch of the pull request (feature)"
+    echo "  -prru, --pull-request-repository-url <string>   URL of the repository of the pull request"
+    echo "  -p, --poll                           <string>   Polling interval (in seconds) to get the build status."
+    echo "      --stream                                    Stream build logs"
+    echo "  -s, --slug                           <string>   Bitrise project slug"
+    echo "  -T, --test                                      Test mode enabled"
+    echo "  -t, --tag                            <string>   Git tag"
+    echo "  -v, --version                                   App version"
+    echo "  -w, --workflow                       <string>   Bitrise workflow"
     echo 
 }
 
@@ -65,6 +71,10 @@ while [ $# -gt 0 ]; do
         BRANCH="$2"
         shift;shift
     ;;
+    -bd|--branch-dest)
+        BRANCH_DEST="$2"
+        shift;shift
+    ;;
     -a|--access-token)
         ACCESS_TOKEN="$2"
         shift;shift
@@ -92,6 +102,26 @@ while [ $# -gt 0 ]; do
     --stream)
         STREAM="true"
         shift
+    ;;
+    -prid|--pull-request-id)
+        PULL_REQUEST_ID="$2"
+        shift;shift
+    ;;
+    -pra|--pull-request-author)
+        PULL_REQUEST_AUTHOR="$2"
+        shift;shift
+    ;;
+    -prhb|--pull-request-head-branch)
+        PULL_REQUEST_HEAD_BRANCH="$2"
+        shift;shift
+    ;;
+    -prmb|--pull-request-merge-branch)
+        PULL_REQUEST_MERGE_BRANCH="$2"
+        shift;shift
+    ;;
+    -prru|--pull-request-repository-url)
+        PULL_REQUEST_REPOSITORY_URL="$2"
+        shift;shift
     ;;
     -p|--poll)
         STATUS_POLLING_INTERVAL="$2"
@@ -170,10 +200,16 @@ function generate_build_payload() {
 {
   "build_params": {
     "branch": "$BRANCH",
+    "branch_dest": "$BRANCH_DEST",
     "commit_hash": "$COMMIT",
     "commit_message": "$MESSAGE",
     "tag": "$TAG",
-    "workflow_id" : "$WORKFLOW",
+    "workflow_id": "$WORKFLOW",
+    "pull_request_id": "$PULL_REQUEST_ID",
+    "pull_request_author": "$PULL_REQUEST_AUTHOR",
+    "pull_request_head_branch": "$PULL_REQUEST_HEAD_BRANCH",
+    "pull_request_merge_branch": "$PULL_REQUEST_MERGE_BRANCH",
+    "pull_request_repository_url": "$PULL_REQUEST_REPOSITORY_URL",
     "environments": $environments
   },
     "hook_info": {
@@ -197,7 +233,7 @@ function trigger_build() {
     
     status=$(echo "$response" | jq ".status" | sed 's/"//g' )
     if [ "$status" != "ok" ]; then
-        msg=$(echo "$response" | jq ".message" | sed 's/"//g')
+        msg=$(echo "$response" | jq ".error_msg" | sed 's/"//g')
         printf "%s" "ERROR: $msg"
         exit 1
     else 
