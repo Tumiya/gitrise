@@ -263,13 +263,21 @@ function stream_logs() {
         response="$(< ./testdata/"$1"_log_info_response.json)"
     fi
     [ "$DEBUG" == "true" ] && log "${command%'--header'*}" "$response" "get_log_info.log"
-    # Every chunk has an accompanying position. Storing the chunks' positions to track the chunks count.
+    # Every chunk has an accompanying position. Storing the chunks' positions to track the chunks.
     while IFS='' read -r line; do log_chunks_positions+=("$line"); done < <(echo "$response" | jq ".log_chunks[].position")
-    new_chunks_count=$((${#log_chunks_positions[@]} - ${#current_log_chunks_positions[@]}))
-    if [[ ${new_chunks_count} != 0 ]]; then
-        for ((i=${#current_log_chunks_positions[@]}; i<${#log_chunks_positions[@]}; i++)); do
-            parsed_chunk=$(echo "$response" | jq .log_chunks[$i].chunk | sed -e 's/^"//' -e 's/"$//')
-            printf "%b" "$parsed_chunk"
+    new_log_chunck_positions=()
+    for i in "${log_chunks_positions[@]}"; do
+        skip=
+        for j in "${current_log_chunks_positions[@]}"; do
+            [[ $i == "$j" ]] && { skip=1; break; }
+        done
+        [[ -z $skip ]] && new_log_chunck_positions+=("$i")
+    done
+    if [[ ${#new_log_chunck_positions[@]} != 0 ]]; then
+        for i in "${new_log_chunck_positions[@]}"; do
+            parsed_chunk=$(echo "$response" | jq --arg index "$i" '.log_chunks[] | select(.position == ($index | tonumber)) | .chunk')
+            cleaned_chunk=$(echo "${parsed_chunk}" | sed -e 's/^"//' -e 's/"$//') 
+            printf "%b" "$cleaned_chunk"
         done
     else
         return
