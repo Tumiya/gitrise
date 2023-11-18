@@ -15,7 +15,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag: v0.8.0
+        tag: v0.8.1
         commit: master
-        name: Gitrise v0.8.0
-        bodyFile: ./docs/release_notes/v0.8.0.md
+        name: Gitrise v0.8.1
+        bodyFile: ./docs/release_notes/v0.8.1.md

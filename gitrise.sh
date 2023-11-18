@@ -4,7 +4,7 @@
 # shellcheck disable=SC2120
 # disables "foo references arguments, but none are ever passed."
 
-VERSION="0.8.0"
+VERSION="0.8.1"
 APP_NAME="Gitrise"
 STATUS_POLLING_INTERVAL=30
 
