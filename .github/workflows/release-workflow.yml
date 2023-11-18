@@ -1,9 +1,6 @@
 name: Release 
 
-on: 
-  push: 
-    branches:
-      - master
+on: workflow_dispatch
 
 jobs:
   github_release:
@@ -16,6 +13,5 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: v0.8.1
-        commit: master
         name: Gitrise v0.8.1
         bodyFile: ./docs/release_notes/v0.8.1.md
