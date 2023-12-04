@@ -11,15 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Lint
         uses: azohra/shell-linter@latest
+        with:
+          exclude-paths: "tests/shunit2,testdata/html_response,LICENSE"
  
   unit_tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Run tests
         run: ./tests/test_runner
         shell: bash
