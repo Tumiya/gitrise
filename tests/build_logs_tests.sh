@@ -7,7 +7,7 @@
 
 source ./gitrise.sh -T
 
-testLogNotArchived(){
+testLogNotArchived() {
     local expected_message="LOGS WERE NOT AVAILABLE - navigate to https://test.io/build/546yw9284a8g1205 to see the logs."
     trigger_build "successful"> /dev/null
     local actual_message=$(get_build_logs "not_archived")
