@@ -30,20 +30,20 @@ testFailureUponUsingWrongOptions() {
     assertEquals "Build trigger error message did not match" "${expected}" "${actual}"
 }
 
-testFetchingBuildStatusText(){
+testFetchingBuildStatusText() {
     local expected_text="Build error"
     local actual_text=$(check_build_status error_status_response.json)
     assertEquals "Build status text did not match." "$expected_text" "$actual_text" 
 }
 
-testExitCodeAssignmentFromBuildStatus(){
+testExitCodeAssignmentFromBuildStatus() {
     local expected_code=1
     process_build error_status_response.json > /dev/null
     local actual_code=${exit_code}
     assertEquals "exit code did not match." "$expected_code" "$actual_code"
 }
 
-testFailureUponReceivingHTMLREsponse(){
+testFailureUponReceivingHTMLREsponse() {
     local expected_message="ERROR: Invalid response received from Bitrise API"
     local actual_message=$(STATUS_POLLING_INTERVAL=0.1; process_build html_response)
     local expected_code=1
@@ -51,7 +51,7 @@ testFailureUponReceivingHTMLREsponse(){
     assertEquals "Status codes did not match" "$expected_code" "${exit_code}"
 }
 
-tearDown(){
+tearDown() {
   build_status=0
 }
 

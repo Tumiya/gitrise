@@ -23,13 +23,13 @@ testPassingFileAsEnvVar() {
     assertEquals "$expected" "$actual"
 }
 
-testHelp(){
+testHelp() {
     local expected=$(usage)
     local actual=$(./gitrise.sh -h)
     assertEquals "$expected" "$actual"
 }
 
-testVersion(){
+testVersion() {
     local expected_version="$VERSION"
     local result=$(./gitrise.sh -v)
     local actual_version=$(echo "$result" | grep -o '[0-9]\{1,\}.[0-9]\{1,\}.[0-9]\{1,\}')
@@ -40,7 +40,7 @@ testTestingModeOption() {
     assertTrue "TESTING_ENABLED is not set to 'true'" "${TESTING_ENABLED}"
 }
 
-testBranchOption(){
+testBranchOption() {
     local expected_branch="test_branch"
     source ./gitrise.sh -b test_branch
     local actual_branch="$BRANCH"
@@ -57,30 +57,37 @@ testTagAndCommitOptions() {
     assertEquals "${expected_commit}" "${actual_commit}"
 }
 
-testWrongUsage(){
+testWrongUsage() {
     local expected=$(printf "Invalid option '-w,'\n%s" "$(usage)")
     local result=$(./gitrise.sh -w, test_workflow)
     assertEquals "$expected" "$result"
 }
 
-testStreamOption(){
+testStreamOption() {
     local expected="true"
     source ./gitrise.sh --stream -b test_branch -w workflow
     local actual="$STREAM"
     assertEquals "$expected" "$actual"
 }
  
-testDefaultPollingIntervalOption(){
+testDefaultPollingIntervalOption() {
     local expected=30
     source ./gitrise.sh -b test_branch -w workflow
     local actual="$STATUS_POLLING_INTERVAL"
     assertEquals "$expected" "$actual"
 }
 
-testSettingPollingInterval(){
+testSettingPollingInterval() {
     local expected=20
     source ./gitrise.sh -b test_branch -w workflow -p 20
     local actual="$STATUS_POLLING_INTERVAL"
     assertEquals "$expected" "$actual"
+}
+
+testPassingBuildArtifactsToDownload() {
+    local expected=".ipa,.app.dSYM.zip"
+    source ./gitrise.sh -b test_branch -w workflow --download-artifacts .ipa,.app.dSYM.zip
+    local actual="$BUILD_ARTIFACTS"
+    assertEquals "Build artifacts do not match" "$expected" "$actual"
 }
 . ./tests/shunit2

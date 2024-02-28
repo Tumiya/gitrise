@@ -1,0 +1,49 @@
+{
+    "data": [
+      {
+        "title": "test_iOS_App.ipa",
+        "artifact_type": "ios-ipa",
+        "artifact_meta": {
+          "info_type_id": "ios-ipa",
+          "file_size_bytes": "841453798.000000",
+          "test_device_id_list": null,
+          "is_test_install_enabled": false,
+          "install_type": "none",
+          "app_info": {
+            "app_title": "test-app",
+            "bundle_id": "com.app.test",
+            "version": "1.0",
+            "build_number": "34",
+            "min_OS_version": "16.0",
+            "device_family_list": [
+              1
+            ]
+          },
+          "provisioning_info": {
+            "creation_date": "2024-01-05T15:51:56Z",
+            "expire_date": "2025-01-04T15:40:41Z",
+            "team_name": "Test Team",
+            "profile_name": "AppStore com.app.test",
+            "provisions_all_devices": false,
+            "ipa_export_method": "app-store",
+            "distribution_type": "distribution-appstore"
+          }
+        },
+        "is_public_page_enabled": false,
+        "slug": "abcd44t653",
+        "file_size_bytes": 841453798
+      },
+      {
+        "title": "test_iOS.app.dSYM.zip",
+        "artifact_type": "file",
+        "artifact_meta": null,
+        "is_public_page_enabled": false,
+        "slug": "bb847gv6534b7c706",
+        "file_size_bytes": 5802876
+      }
+    ],
+    "paging": {
+      "total_item_count": 2,
+      "page_item_limit": 50
+    }
+  }
