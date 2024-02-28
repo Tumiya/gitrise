@@ -1,3 +1,4 @@
 .vscode/
 .DS_Store
 gitrise_temp/
+build_artifacts/
