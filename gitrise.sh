@@ -141,12 +141,6 @@ function validate_input() {
         printf "\e[31m ERROR: polling interval is too short. The minimum acceptable value is 10, but received %s.\e[0m\n" "$STATUS_POLLING_INTERVAL"
         exit 1
     fi
-
-    if [[ -z "$BUILD_ARTIFACTS" ]]; then
-        printf "%b" "\e[31m ERROR: Missing build artifact name.\e[0m\n"
-        usage
-        exit 1
-    fi
 }
 
 # map environment variables to objects Bitrise will accept. 
