@@ -12,7 +12,7 @@ build_slug=""
 build_url=""
 build_status=0
 current_build_status_text=""
-exit_code=""
+exit_code=0
 log_url=""
 build_artifacts_slugs=()
 
@@ -224,7 +224,7 @@ function process_build() {
         if [[ $TESTING_ENABLED == true ]] && [[ "${FUNCNAME[1]}" != "testFailureUponReceivingHTMLREsponse" ]]; then break; fi
         sleep "$STATUS_POLLING_INTERVAL"
     done
-    if [ "$build_status" = 1 ]; then exit_code=0; else exit_code=1; fi
+    if [ "$build_status" != 1 ]; then exit_code=$(( exit_code + 1 )); fi
 } 
 
 function check_build_status() {
@@ -406,7 +406,7 @@ function download_single_artifact() {
     artifact_title=$(echo "$response" | jq ".data.title" | sed 's/"//g')
     printf "%b" "Downloading build artifact $artifact_title\n"
     curl -X GET "$artifact_url" --output "./build_artifacts/$artifact_title"
-    exit_code=$?
+    exit_code=$(( exit_code + $? ))
 }
 
 function download_build_artifacts() {
