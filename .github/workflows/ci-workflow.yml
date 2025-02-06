@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Lint
-        uses: azohra/shell-linter@latest
+        uses: Azbagheri/shell-linter@latest
         with:
           exclude-paths: "tests/shunit2,testdata/html_response,LICENSE"
  

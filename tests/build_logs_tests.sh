@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1091,SC2155,SC2154
-# Not following: (error message here)
-# Declare and assign separately to avoid masking return values.
-# var is referenced but not assigned.
+# shellcheck disable=SC1091,SC2155
 
 source ./gitrise.sh -T
 
