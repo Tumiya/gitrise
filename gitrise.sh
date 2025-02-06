@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # shellcheck disable=SC2155
 # disbales "Declare and assign separately to avoid masking return values."
 # shellcheck disable=SC2120
