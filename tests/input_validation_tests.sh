@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 # shellcheck disable=SC1091,SC2155
-# Not following: (error message here)
-# Declare and assign separately to avoid masking return values.
 
 testMissingWorkflow() {
     local expected_message="ERROR: Missing arguments(s). All these args must be passed: --workflow,--slug,--access-token"
