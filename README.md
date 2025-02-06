@@ -1,6 +1,7 @@
 # Gitrise 
-[![Release](https://img.shields.io/github/release/Tumiya/gitrise.sh.svg)](https://github.com/Tumiya/gitrise.sh/releases)
-[![Mainline Status](https://github.com/Tumiya/gitrise.sh/workflows/CI-workflow/badge.svg)](https://github.com/Tumiya/gitrise.sh/actions?query=branch%3Adevelop)
+[![Version](https://img.shields.io/github/v/release/Tumiya/gitrise?label=Version)](https://github.com/Tumiya/gitrise/releases)
+[![Mainline Status](https://img.shields.io/github/actions/workflow/status/Tumiya/gitrise/ci-workflow.yml?label=Mainline%20Status)](https://github.com/Tumiya/gitrise/actions?query=branch%3Adevelop)
+![License](https://img.shields.io/github/license/Tumiya/gitrise?label=License)
 
 A Bitrise trigger in pure `bash`!
 
