@@ -1,6 +1,6 @@
 # Gitrise 
-[![Release](https://img.shields.io/github/release/azohra/gitrise.sh.svg)](https://github.com/azohra/gitrise.sh/releases)
-[![Mainline Status](https://github.com/azohra/gitrise.sh/workflows/CI-workflow/badge.svg)](https://github.com/azohra/gitrise.sh/actions?query=branch%3Adevelop)
+[![Release](https://img.shields.io/github/release/Tumiya/gitrise.sh.svg)](https://github.com/Tumiya/gitrise.sh/releases)
+[![Mainline Status](https://github.com/Tumiya/gitrise.sh/workflows/CI-workflow/badge.svg)](https://github.com/Tumiya/gitrise.sh/actions?query=branch%3Adevelop)
 
 A Bitrise trigger in pure `bash`!
 
@@ -99,4 +99,4 @@ To run the unit tests, use the following command in the project directory
 After testing your changes, open a pull request to merge your branch into the **develop** branch.
 
 ## License
-This software is available as open source under the terms of the MIT License. A copy of this license is included in the file [LICENSE](https://github.com/azohra/gitrise.sh/blob/develop/LICENSE).
+This software is available as open source under the terms of the MIT License. A copy of this license is included in the file [LICENSE](https://github.com/Tumiya/gitrise.sh/blob/develop/LICENSE).
