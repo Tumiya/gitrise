@@ -276,7 +276,7 @@ function stream_logs() {
     fi
     [ "$DEBUG" == "true" ] && log "${command%'--header'*}" "$response" "get_log_info.log"
     # Every chunk has an accompanying position. Storing the chunks' positions to track the chunks.
-    while IFS='' read -r line; do log_chunks_positions+=("$line"); done < <(echo "$response" | jq ".log_chunks[].position")
+    while IFS='' read -r line; do log_chunks_positions+=("$line"); done < <(echo "$response" | jq ".log_chunks[]?.position // empty")
     new_log_chunck_positions=()
     for i in "${log_chunks_positions[@]}"; do
         skip=
@@ -287,7 +287,7 @@ function stream_logs() {
     done
     if [[ ${#new_log_chunck_positions[@]} != 0 ]]; then
         for i in "${new_log_chunck_positions[@]}"; do
-            parsed_chunk=$(echo "$response" | jq --arg index "$i" '.log_chunks[] | select(.position == ($index | tonumber)) | .chunk')
+            parsed_chunk=$(echo "$response" | jq -r --arg index "$i" '.log_chunks[] | select(.position == ($index | tonumber)) | .chunk')
             cleaned_chunk=$(echo "${parsed_chunk}" | sed -e 's/^"//' -e 's/"$//') 
             printf "%b" "$cleaned_chunk"
         done
