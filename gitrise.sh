@@ -196,6 +196,7 @@ function trigger_build() {
     if [ -z "${TESTING_ENABLED}" ]; then 
         local command="curl --silent -X POST https://api.bitrise.io/v0.1/apps/$PROJECT_SLUG/builds \
                 --data '$(generate_build_payload)' \
+                --header 'Content-Type: application/json' \
                 --header 'Accept: application/json' --header 'Authorization: $ACCESS_TOKEN'"
         response=$(eval "${command}") 
     else
