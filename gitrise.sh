@@ -8,6 +8,7 @@
 VERSION="0.10.0"
 APP_NAME="Gitrise"
 STATUS_POLLING_INTERVAL=30
+PRIORITY=0
 
 build_slug=""
 build_url=""
@@ -35,6 +36,7 @@ function usage() {
     echo "  -t, --tag                   <string>   Git tag"
     echo "  -v, --version                          App version"
     echo "  -w, --workflow              <string>   Bitrise workflow"
+    echo "  -P, --priority              <string>   Priority assigned to the build, from -100 to 100."
     echo 
 }
 
@@ -98,6 +100,10 @@ while [ $# -gt 0 ]; do
         BUILD_ARTIFACTS="$2"
         shift;shift
     ;;
+    -P|--priority)
+        PRIORITY="$2"
+        shift;shift
+    ;;
     *) 
         echo "Invalid option '$1'"
         usage
@@ -142,6 +148,11 @@ function validate_input() {
         printf "\e[31m ERROR: polling interval is too short. The minimum acceptable value is 10, but received %s.\e[0m\n" "$STATUS_POLLING_INTERVAL"
         exit 1
     fi
+    
+    if [[ $PRIORITY -lt -100 || $PRIORITY -gt 100 ]]; then
+        printf "\e[31m ERROR: priority is out of the valid interval. The acceptable value is between -100 and 100, but received %s.\e[0m\n" "$PRIORITY"
+        exit 1
+    fi
 }
 
 # map environment variables to objects Bitrise will accept. 
@@ -182,7 +193,8 @@ function generate_build_payload() {
     "commit_hash": "$COMMIT",
     "tag": "$TAG",
     "workflow_id" : "$WORKFLOW",
-    "environments": $environments
+    "environments": $environments,
+    "priority": $PRIORITY
   },
     "hook_info": {
       "type": "bitrise"
